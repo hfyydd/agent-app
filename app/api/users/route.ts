@@ -1,4 +1,5 @@
-import { createClient } from '@supabase/supabase-js';
+//import { createClient } from '@supabase/supabase-js';
+import { createClient } from '@/utils/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
 
 // 定义 Supabase 用户类型
