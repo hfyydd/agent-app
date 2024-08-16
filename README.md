@@ -83,5 +83,6 @@ agent-store/
 - [Supabase](https://supabase.io/)
 - [Tailwind CSS](https://tailwindcss.com/)
 - [Vercel](https://vercel.com/)
+- [postgres-new](https://github.com/supabase-community/postgres-new)
 
 感谢你对Agent Store的关注和支持！
