@@ -29,16 +29,16 @@ interface UserWithBalance {
 }
 
 export async function GET(req: NextRequest) {
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    {
-      auth: {
-        autoRefreshToken: false,
-        persistSession: false
-      }
-    }
-  );
+  const supabase = createClient();
+    // process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    // process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    // {
+    //   auth: {
+    //     autoRefreshToken: false,
+    //     persistSession: false
+    //   }
+    // }
+
 
   // 获取并验证令牌
   const token = req.headers.get('Authorization')?.split('Bearer ')[1];

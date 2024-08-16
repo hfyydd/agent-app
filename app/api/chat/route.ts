@@ -30,7 +30,7 @@ const zhipu = createOpenAI({
 });
 
 const azure = createAzure({
-  baseURL: "https://agent-app.openai.azure.com/",
+  baseURL: "https://agent-app.openai.azure.com",
   //从环境变量中获取
   apiKey: process.env.AZURE_API_KEY,
 });
@@ -92,7 +92,7 @@ export async function POST(req: Request) {
 
 
   `,
-    model: azure("gpt-4o-mini"),//zhipu("glm-4"),//
+    model: azure("gpt-35-turbo-instruct"),//zhipu("glm-4"),//
     messages: convertToCoreMessages(messages),
     tools: convertToCoreTools(tools),
   })
