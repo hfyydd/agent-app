@@ -7,7 +7,7 @@ import MobileMenu from './MobileMenu';
 
 // 假设你的版本号存储在某个配置文件中
 // config.js 或 config.ts
-export const VERSION = '0.0.7';  // 根据你的实际版本号进行更新
+export const VERSION = '0.1.0';  // 根据你的实际版本号进行更新
 
 export default function NavBar() {
   return (
