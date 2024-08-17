@@ -63,7 +63,6 @@ const AdminPage: React.FC = () => {
         throw new Error('Failed to fetch users');
       }
       const data = await response.json();
-      console.log('Users:', data.length);
       setUsers(data);
       setFilteredUsers(data);
     } catch (error) {

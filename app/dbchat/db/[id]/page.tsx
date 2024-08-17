@@ -61,7 +61,6 @@ export default function Page() {
 
   // The very first DB needs to be loaded on mount
   useEffect(() => {
-    console.log('preloadDb', currentDatabaseId)
     preloadDb(currentDatabaseId)
   }, [currentDatabaseId, preloadDb])
 

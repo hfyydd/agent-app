@@ -51,7 +51,6 @@ const PurchasesPage: React.FC = () => {
         `)
         .order('created_at', { ascending: false });
 
-      console.log(data);
       if (error) throw error;
       setPurchases(data || []);
     } catch (error) {

@@ -43,7 +43,7 @@ const azure = createAzure({
 
 export async function POST(req: Request) {
   const { messages }: { messages: Message[] } = await req.json()
-  console.log(messages)
+  //console.log(messages)
   // 使用 map 和 join 来格式化所有消息
   //const formattedMessages = messages.map(formatMessage).join('\n---\n')
 

@@ -1,6 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 import LogoutButton from "./LogoutButton";
+import { useEffect } from "react";
 
 export default async function AuthButton() {
   const supabase = createClient();
