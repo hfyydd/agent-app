@@ -2,6 +2,13 @@ import { GeistSans } from "geist/font/sans";
 import "./globals.css";
 import NavBar from '@/components/NavBar';
 
+export const metadata = {
+  title: '考拉的交易市集',
+  icons: {
+    icon: '/favicon.ico',
+  },
+}
+
 
 export default function RootLayout({
   children,
