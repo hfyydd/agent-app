@@ -17,6 +17,7 @@ export interface Workflow {
   test_url: string;
   downloads: number;
   updated_at: string;
+  content_image_url: string;
 }
 
 interface WorkflowListProps {
@@ -134,6 +135,7 @@ export default function WorkflowList({ workflows }: WorkflowListProps) {
             test_url={workflow.test_url}
             views={workflow.views}
             downloads={workflow.downloads}
+            content_image_url={workflow.content_image_url}
           />
         ))}
       </div>

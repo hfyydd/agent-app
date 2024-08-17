@@ -19,6 +19,7 @@ interface ToolCardProps {
   favorites?: number;
   test_url?: string;
   downloads?: number;
+  content_image_url?: string;
 }
 
 interface Tag {
@@ -26,7 +27,7 @@ interface Tag {
   name: string;
 }
 
-export default function ToolCard({ id, title, description, tagIds, content, price, icon_url, views = 0, test_url, downloads = 0 }: ToolCardProps) {
+export default function ToolCard({ id, title, description, tagIds, content, price, icon_url, views = 0, test_url, downloads = 0, content_image_url }: ToolCardProps) {
   const [tags, setTags] = useState<Tag[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const supabase = createClient();
@@ -37,7 +38,7 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
   const router = useRouter();
 
   const [localViews, setLocalViews] = useState(views); // 本地保存的浏览次数
-  const [localDownloads, setLocalDownloads] = useState(downloads); // 本地保存的浏览次数
+  const [localDownloads, setLocalDownloads] = useState(downloads); // 本地保存的浏���次数
 
   useEffect(() => {
     async function fetchTags() {
@@ -145,7 +146,7 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
 
     if (purchaseError && purchaseError.code !== 'PGRST116') {
       console.error('Error checking purchase:', purchaseError);
-      alert('检查购买记录时出错，请重试');
+      alert('��查购买记录时出错，请重试');
       return;
     }
 
@@ -156,7 +157,7 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
     }
 
     if (!price || price <= 0) {
-      // 如��工作流是免费的，直接下载
+      // 如果工作流是免费的，直接下载
       const { data, error } = await supabase.rpc('purchase_workflow', {
         workflow_id: id,
         workflow_price: 0
@@ -256,32 +257,37 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg w-full max-w-md h-[500px] flex flex-col relative"> {/* 固定高度为500px */}
+          <div className="bg-white rounded-lg w-full max-w-2xl h-[80vh] flex flex-col relative"> {/* 增加宽度和高度 */}
             <button
               onClick={() => setIsModalOpen(false)}
-              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
             >
               <FaTimes />
             </button>
-            <div className="p-4 flex-grow overflow-y-auto"> {/* 使内容可滚动 */}
-              <h2 className="text-lg font-bold mb-2">{title}</h2>
+            <div className="p-6 flex-grow overflow-y-auto"> {/* 增加内边距 */}
+              <h2 className="text-2xl font-bold mb-3">{title}</h2> {/* 增加标题大小 */}
               {renderPrice()}
-              <div className="mt-2 mb-3 prose prose-sm max-w-none">
+              <div className="mt-4 mb-4 prose prose-sm max-w-none"> {/* 增加间距 */}
                 <ReactMarkdown>{description}</ReactMarkdown>
               </div>
-              <div className="mb-3 flex flex-wrap">{renderTags()}</div>
+              {content_image_url && (
+                <div className="mb-4">
+                  <img src={content_image_url} alt="Content image" className="w-full h-auto rounded-lg" />
+                </div>
+              )}
+              <div className="mb-4 flex flex-wrap">{renderTags()}</div> {/* 增加间距 */}
             </div>
-            <div className="p-4 border-t"> {/* 底部按钮固定 */}
-              <div className="flex justify-end space-x-2">
+            <div className="p-6 border-t"> {/* 增加底部内边距 */}
+              <div className="flex justify-end space-x-4"> {/* 增加按钮间距 */}
                 <button
                   onClick={handleViewInChat}
-                  className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300 flex items-center text-sm"
+                  className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded transition duration-300 flex items-center text-base" 
                 >
                   <FaEye className="mr-2" /> 测试
                 </button>
                 <button
                   onClick={handleDownload}
-                  className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition duration-300 flex items-center text-sm"
+                  className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded transition duration-300 flex items-center text-base" 
                 >
                   <FaDownload className="mr-2" /> 下载
                 </button>

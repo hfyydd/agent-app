@@ -31,6 +31,8 @@ const UploadWorkflowDialog: React.FC<UploadWorkflowDialogProps> = ({
   const [selectedTags, setSelectedTags] = useState<number[]>([]);
   const [price, setPrice] = useState('0.00');
   const [uploadType, setUploadType] = useState<UploadType>('workflow');
+  const [contentImage, setContentImage] = useState<File | null>(null);
+
 
   const supabase = createClient();
 
@@ -67,6 +69,7 @@ const UploadWorkflowDialog: React.FC<UploadWorkflowDialogProps> = ({
     setPrice('0.00');
     setIsUploading(false);
     setUploadType('workflow');
+    setContentImage(null);
   };
 
   const handleTagChange = (tagId: number) => {
@@ -83,32 +86,34 @@ const UploadWorkflowDialog: React.FC<UploadWorkflowDialogProps> = ({
       alert('请提供 名称, 图标, 价格, 和选择至少一个 Tag');
       return;
     }
-  
+
     setIsUploading(true);
-  
+
     try {
       // 检查用户认证
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         throw new Error('未找到用户');
       }
-  
+
       // 读取文件内容
       const fileContent = await file.text();
-  
+
       let iconUrl = null;
+      let contentImageUrl = null;
+
       if (icon) {
         // 检查文件类型
         if (!icon.type.startsWith('image/')) {
           throw new Error('只允许上传图片文件');
         }
-  
+
         // 检查文件大小 (例如 5MB 限制)
         const MAX_FILE_SIZE = 5 * 1024 * 1024;
         if (icon.size > MAX_FILE_SIZE) {
           throw new Error('尺寸不能超过 5mb');
         }
-  
+
         // 创建文件名 (使用允许的文件夹名)
         const iconFileName = `${user.id}-${Date.now()}-icon`;
         // 上传图标
@@ -118,19 +123,45 @@ const UploadWorkflowDialog: React.FC<UploadWorkflowDialogProps> = ({
             cacheControl: '3600',
             upsert: false
           });
-  
+
         if (uploadError) throw uploadError;
-  
+
         // 获取公共 URL
         const { data: publicUrlData } = supabase.storage
           .from('workflow-icons')
           .getPublicUrl(iconFileName);
-  
+
         iconUrl = publicUrlData.publicUrl;
       }
+      if (contentImage) {
+        if (!contentImage.type.startsWith('image/')) {
+          throw new Error('只允许上传图片文件');
+        }
 
-      
-  
+        const MAX_FILE_SIZE = 5 * 1024 * 1024;
+        if (contentImage.size > MAX_FILE_SIZE) {
+          throw new Error('内容图片尺寸不能超过 5mb');
+        }
+
+        const contentImageFileName = `${user.id}-${Date.now()}-content-image`;
+        const { data: contentImageUploadData, error: contentImageUploadError } = await supabase.storage
+          .from('workflow-content-images')
+          .upload(contentImageFileName, contentImage, {
+            cacheControl: '3600',
+            upsert: false
+          });
+
+        if (contentImageUploadError) throw contentImageUploadError;
+
+        const { data: contentImagePublicUrlData } = supabase.storage
+          .from('workflow-content-images')
+          .getPublicUrl(contentImageFileName);
+
+        contentImageUrl = contentImagePublicUrlData.publicUrl;
+      }
+
+
+
       // 插入数据到 workflows 表
       const { data, error } = await supabase
         .from('workflows')
@@ -144,12 +175,13 @@ const UploadWorkflowDialog: React.FC<UploadWorkflowDialogProps> = ({
           tags: selectedTags,
           price: parseFloat(price),
           type: uploadType,
+          content_image_url: contentImageUrl,
         })
         .select()
         .single();
-  
+
       if (error) throw error;
-  
+
       onUploadSuccess();
       onClose();
     } catch (error) {
@@ -323,6 +355,33 @@ const UploadWorkflowDialog: React.FC<UploadWorkflowDialogProps> = ({
                 )}
                 <label htmlFor="icon" className="px-4 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer">
                   上传
+                </label>
+              </div>
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="contentImage">
+                内容图片 (可选)
+              </label>
+              <input
+                id="contentImage"
+                type="file"
+                accept="image/*"
+                onChange={(e) => setContentImage(e.target.files?.[0] || null)}
+                className="hidden"
+              />
+              <div className="flex items-center space-x-2">
+                {contentImage ? (
+                  <img src={URL.createObjectURL(contentImage)} alt="Selected content image" className="w-32 h-32 rounded-lg object-cover" />
+                ) : (
+                  <div className="w-32 h-32 bg-gray-200 rounded-lg flex items-center justify-center text-gray-400">
+                    <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                )}
+                <label htmlFor="contentImage" className="px-4 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer">
+                  上传内容图片
                 </label>
               </div>
             </div>

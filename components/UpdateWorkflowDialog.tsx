@@ -15,6 +15,7 @@ interface UpdateWorkflowDialogProps {
     tags: string[];
     price: number;
     type: 'workflow' | 'prompt';
+    content_image_url: string | null;
   };
 }
 
@@ -40,6 +41,7 @@ const UpdateWorkflowDialog: React.FC<UpdateWorkflowDialogProps> = ({
   const [selectedTags, setSelectedTags] = useState<string[]>(workflow.tags);
   const [price, setPrice] = useState(workflow.price.toFixed(2));
   const [uploadType] = useState<'workflow' | 'prompt'>(workflow.type);
+  const [contentImage, setContentImage] = useState<File | null>(null);
 
   const supabase = createClient();
 
@@ -90,6 +92,7 @@ const UpdateWorkflowDialog: React.FC<UpdateWorkflowDialogProps> = ({
     setSelectedTags(workflow.tags);
     setPrice(workflow.price.toFixed(2));
     setIsUpdating(false);
+    setContentImage(null);
   };
 
   const handleTagChange = (tagId: string) => {
@@ -143,6 +146,25 @@ const UpdateWorkflowDialog: React.FC<UpdateWorkflowDialogProps> = ({
         iconUrl = publicUrlData.publicUrl;
       }
   
+      let contentImageUrl = workflow.content_image_url;
+      if (contentImage) {
+        const contentImageFileName = `${user.id}-${Date.now()}-content-image`;
+        const { data: contentImageUploadData, error: contentImageUploadError } = await supabase.storage
+          .from('workflow-content-images')
+          .upload(contentImageFileName, contentImage, {
+            cacheControl: '3600',
+            upsert: false
+          });
+  
+        if (contentImageUploadError) throw contentImageUploadError;
+  
+        const { data: contentImagePublicUrlData } = supabase.storage
+          .from('workflow-content-images')
+          .getPublicUrl(contentImageFileName);
+  
+        contentImageUrl = contentImagePublicUrlData.publicUrl;
+      }
+  
       let updatedContent = workflow.content;
       if (file) {
         updatedContent = await file.text();
@@ -158,6 +180,7 @@ const UpdateWorkflowDialog: React.FC<UpdateWorkflowDialogProps> = ({
           test_url: testUrl,
           tags: selectedTags,
           price: parseFloat(price),
+          content_image_url: contentImageUrl,
         })
         .eq('id', workflow.id)
         .select()
@@ -309,6 +332,35 @@ const UpdateWorkflowDialog: React.FC<UpdateWorkflowDialogProps> = ({
                   type="file"
                   accept="image/*"
                   onChange={(e) => setIcon(e.target.files?.[0] || null)}
+                  className="hidden"
+                />
+              </div>
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="contentImage">
+                内容图片
+              </label>
+              <div className="flex items-center space-x-2">
+                {contentImage ? (
+                  <img src={URL.createObjectURL(contentImage)} alt="新内容图片" className="w-16 h-16 rounded-lg object-cover" />
+                ) : workflow.content_image_url ? (
+                  <img src={workflow.content_image_url} alt="当前内容图片" className="w-16 h-16 rounded-lg object-cover" />
+                ) : (
+                  <div className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center text-gray-400">
+                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                )}
+                <label htmlFor="contentImage" className="px-4 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer">
+                  更改内容图片
+                </label>
+                <input
+                  id="contentImage"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setContentImage(e.target.files?.[0] || null)}
                   className="hidden"
                 />
               </div>
