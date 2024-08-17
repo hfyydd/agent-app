@@ -16,16 +16,17 @@ export interface Workflow {
   icon_url: string;
   test_url: string;
   downloads: number;
+  updated_at: string;
 }
 
 interface WorkflowListProps {
   workflows: Workflow[];
 }
 
-type SortOption = 'price' | 'views' | 'name' | 'downloads';
+type SortOption = 'price' | 'views' | 'updated_at' | 'downloads';
 
 export default function WorkflowList({ workflows }: WorkflowListProps) {
-  const [sortBy, setSortBy] = useState<SortOption>('downloads');
+  const [sortBy, setSortBy] = useState<SortOption>('updated_at');
   const [visibleWorkflows, setVisibleWorkflows] = useState<Workflow[]>([]);
   const [page, setPage] = useState(1);
   const loaderRef = useRef<HTMLDivElement>(null);
@@ -48,8 +49,8 @@ export default function WorkflowList({ workflows }: WorkflowListProps) {
             return (a.price || 0) - (b.price || 0);
           case 'views':
             return b.views - a.views;
-          case 'name':
-            return a.name.localeCompare(b.name);
+          case 'updated_at':
+            return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
           case 'downloads':
             return b.downloads - a.downloads;
           default:
@@ -112,10 +113,11 @@ export default function WorkflowList({ workflows }: WorkflowListProps) {
           onChange={(e) => setSortBy(e.target.value as SortOption)}
           className="border rounded p-1"
         >
+          <option value="name">更新时间</option>
           <option value="downloads">下载量</option>
           <option value="views">浏览量</option>
           <option value="price">价格</option>
-          <option value="name">名称</option>
+          
         </select>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
