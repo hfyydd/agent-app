@@ -78,6 +78,19 @@ export default function VideoPage() {
           ))}
         </div>
       </div>
+      <footer className="w-full border-t border-t-foreground/10 p-4 text-center">
+          <p className="text-xs">
+            Powered by{" "}
+            <a
+              href=""
+              target="_blank"
+              className="font-bold hover:underline"
+              rel="noreferrer"
+            >
+              找自己
+            </a>
+          </p>
+        </footer>
     </>
   );
 }
