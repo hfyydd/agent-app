@@ -5,6 +5,7 @@ import { FaDownload, FaTimes, FaEye } from 'react-icons/fa';
 import { useUser } from '@/hooks/useUser';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import ReactMarkdown from 'react-markdown';
 
 interface ToolCardProps {
   id: string;
@@ -155,7 +156,7 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
     }
 
     if (!price || price <= 0) {
-      // 如果工作流是免费的，直接下载
+      // 如��工作流是免费的，直接下载
       const { data, error } = await supabase.rpc('purchase_workflow', {
         workflow_id: id,
         workflow_price: 0
@@ -265,7 +266,9 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
             <div className="p-4 flex-grow overflow-y-auto"> {/* 使内容可滚动 */}
               <h2 className="text-lg font-bold mb-2">{title}</h2>
               {renderPrice()}
-              <p className="text-gray-600 text-sm mt-2 mb-3">{description}</p>
+              <div className="mt-2 mb-3 prose prose-sm max-w-none">
+                <ReactMarkdown>{description}</ReactMarkdown>
+              </div>
               <div className="mb-3 flex flex-wrap">{renderTags()}</div>
             </div>
             <div className="p-4 border-t"> {/* 底部按钮固定 */}
