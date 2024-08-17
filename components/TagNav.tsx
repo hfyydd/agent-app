@@ -3,7 +3,8 @@
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import useSWR from 'swr';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+
 
 interface Tag {
   id: string;
@@ -21,7 +22,7 @@ const fetcher = async (url: string): Promise<Tag[]> => {
 export default function TagNav() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const currentTag = searchParams.get('tag');
+  const [selectedTag, setSelectedTag] = useState<string | null>(searchParams.get('tag'));
   const currentSearch = searchParams.get('search') || '';
 
   const [searchTerm, setSearchTerm] = useState(currentSearch);
@@ -36,7 +37,17 @@ export default function TagNav() {
 
   const handleTagClick = (tagId: string) => {
     const newSearchParams = new URLSearchParams(searchParams);
-    newSearchParams.set('tag', tagId);
+    if (selectedTag === tagId) {
+      setSelectedTag(null);
+      newSearchParams.delete('tag');
+    } else {
+      setSelectedTag(tagId);
+      if (tagId) {
+        newSearchParams.set('tag', tagId);
+      } else {
+        newSearchParams.delete('tag');
+      }
+    }
     router.replace(`/?${newSearchParams.toString()}`);
   };
 
@@ -51,32 +62,90 @@ export default function TagNav() {
     router.replace(`/?${newSearchParams.toString()}`);
   };
 
+  const [orderedTags, setOrderedTags] = useState<Tag[]>([]);
+
+  useEffect(() => {
+    if (tags) {
+      setOrderedTags(tags);
+    }
+  }, [tags]);
+
+  const onDragEnd = (result: any) => {
+    if (!result.destination) {
+      return;
+    }
+
+    const items = Array.from(orderedTags);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+
+    setOrderedTags(items);
+  };
+
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  const scrollTags = (direction: 'left' | 'right') => {
+    if (scrollContainerRef.current) {
+      const scrollAmount = 200;
+      const newScrollLeft = direction === 'left'
+        ? scrollContainerRef.current.scrollLeft - scrollAmount
+        : scrollContainerRef.current.scrollLeft + scrollAmount;
+      
+      scrollContainerRef.current.scrollTo({
+        left: newScrollLeft,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   return (
-    <nav className="flex items-center justify-between py-2 border-b border-gray-200">
-      <div className="flex-1 overflow-x-auto whitespace-nowrap pr-4">
-        <Link 
-          href="/" 
-          className={`text-sm mr-4 px-3 py-1.5 rounded-full transition-colors duration-200
-            ${!currentTag 
-              ? 'bg-blue-100 text-blue-600 font-medium' 
-              : 'text-gray-600 hover:bg-gray-100'
-            }`}
+    <nav className="flex items-center space-x-4 py-2 border-b border-gray-200">
+      <div className="flex-1 relative min-w-0">
+        <button
+          onClick={() => scrollTags('left')}
+          className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-75 p-1 rounded-full shadow-md z-10"
         >
-          全部
-        </Link>
-        {tags && tags?.map((tag) => (
-          <button
-            key={tag.id}
-            onClick={() => handleTagClick(tag.id)}
+          <svg className="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <div 
+          ref={scrollContainerRef}
+          className="overflow-x-auto whitespace-nowrap px-8 scrollbar-hide"
+          style={{ scrollBehavior: 'smooth' }}
+        >
+          <Link 
+            href="/" 
             className={`text-sm mr-4 px-3 py-1.5 rounded-full transition-colors duration-200
-              ${currentTag === tag.id
-                ? 'bg-blue-100 text-blue-600 font-medium'
+              ${!selectedTag 
+                ? 'bg-blue-100 text-blue-600 font-medium' 
                 : 'text-gray-600 hover:bg-gray-100'
               }`}
           >
-            {tag.name}
-          </button>
-        ))}
+            全部
+          </Link>
+          {tags && tags.map((tag) => (
+            <button
+              key={tag.id}
+              onClick={() => handleTagClick(tag.id)}
+              className={`text-sm mr-4 px-3 py-1.5 rounded-full transition-colors duration-200
+                ${selectedTag === tag.id
+                  ? 'bg-blue-100 text-blue-600 font-medium'
+                  : 'text-gray-600 hover:bg-gray-100'
+                }`}
+            >
+              {tag.name}
+            </button>
+          ))}
+        </div>
+        <button
+          onClick={() => scrollTags('right')}
+          className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-75 p-1 rounded-full shadow-md z-10"
+        >
+          <svg className="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
       </div>
       <form onSubmit={handleSearch} className="flex-shrink-0">
         <div className="relative">
