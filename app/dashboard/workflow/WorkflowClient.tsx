@@ -19,6 +19,7 @@ interface Workflow {
   created_at: string;
   approved: 'approved' | 'pending' | 'rejected';
   rejection_reason: string | null;
+  content_image_url: string | null;
 }
 
 export default function WorkflowClient({ initialWorkflows, userId }: { initialWorkflows: Workflow[], userId: string }) {
