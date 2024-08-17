@@ -1,5 +1,5 @@
-import { createClient } from '@supabase/supabase-js';
-//import { createClient } from '@/utils/supabase/server';
+//import { createClient } from '@supabase/supabase-js';
+import { createClient } from '@/utils/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
 
 // 定义 Supabase 用户类型
@@ -29,16 +29,22 @@ interface UserWithBalance {
 }
 
 export async function GET(req: NextRequest) {
-  const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!,
-      {
-        auth: {
-          autoRefreshToken: false,
-          persistSession: false
-        }
-      }
-  );
+  const supabase = createClient();
+  //     process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  //     process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  //     {
+  //       auth: {
+  //         autoRefreshToken: false,
+  //         persistSession: false
+  //       },
+  //       db: {
+  //         schema: 'public'
+  //       },
+  //       global: {
+  //         headers: { 'Cache-Control': 'no-store' }
+  //       }
+  //     }
+  // );
 
   // 获取并验证令牌
   const token = req.headers.get('Authorization')?.split('Bearer ')[1];
@@ -67,6 +73,7 @@ export async function GET(req: NextRequest) {
   });
 
   if (usersError) {
+    console.log(usersError)
     return NextResponse.json({ error: usersError.message }, { status: 500 });
   }
 
@@ -74,6 +81,7 @@ export async function GET(req: NextRequest) {
   const { data: accounts, error: accountsError } = await supabase
     .from('accounts')
     .select('user_id, balance');
+
 
   if (accountsError) {
     return NextResponse.json({ error: accountsError.message }, { status: 500 });
