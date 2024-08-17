@@ -93,7 +93,7 @@ export async function POST(req: Request) {
 
 
   `,
-    model: azure("gpt-4o-mini"),//zhipu("glm-4"),//
+    model: zhipu("glm-4"),//azure("gpt-4o-mini"),//
     messages: convertToCoreMessages(messages),
     tools: convertToCoreTools(tools),
   })
