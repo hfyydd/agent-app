@@ -221,7 +221,7 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
 
   return (
     <>
-      <div className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition duration-300 ease-in-out flex flex-col h-full cursor-pointer" onClick={handleOpenModal}>
+      <div className="bg-white rounded-lg shadow-md p-4 hover:shadow-xl hover:scale-105 transition duration-300 ease-in-out flex flex-col h-full cursor-pointer" onClick={handleOpenModal}>
         <div className="flex items-start mb-3">
           {icon_url && (
             <div className="w-20 h-20 flex-shrink-0 relative overflow-hidden rounded-lg mr-3">
