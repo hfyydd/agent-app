@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import useSWR from 'swr';
 import { useState, useEffect, useRef } from 'react';
-
+import { createClient } from "@/utils/supabase/client";
 
 interface Tag {
   id: string;
@@ -26,13 +26,32 @@ export default function TagNav() {
   const currentSearch = searchParams.get('search') || '';
 
   const [searchTerm, setSearchTerm] = useState(currentSearch);
+  const [tags, setTags] = useState<Tag[]>([]);
 
-  const { data:tags, error } = useSWR<Tag[]>('/api/tags', fetcher);
-
-  if (error) console.error('Error fetching tags:', error);
+  //const { data:tags, error } = useSWR<Tag[]>('/api/tags', fetcher);
+  const supabase = createClient();
+  //if (error) console.error('Error fetching tags:', error);
 
   useEffect(() => {
     setSearchTerm(currentSearch);
+  }, [currentSearch]);
+
+  useEffect(() => {
+    async function fetchTags() {
+
+      const { data: tags, error } = await supabase
+        .from('tags')
+        .select('*')
+        .order('order_index', { ascending: true });
+
+      if (error) {
+        console.error('Error fetching tags:', error);
+      } else if (tags) {
+        setTags(tags);
+      }
+
+    }
+    fetchTags();
   }, [currentSearch]);
 
   const handleTagClick = (tagId: string) => {
@@ -90,7 +109,7 @@ export default function TagNav() {
       const newScrollLeft = direction === 'left'
         ? scrollContainerRef.current.scrollLeft - scrollAmount
         : scrollContainerRef.current.scrollLeft + scrollAmount;
-      
+
       scrollContainerRef.current.scrollTo({
         left: newScrollLeft,
         behavior: 'smooth'
@@ -109,16 +128,16 @@ export default function TagNav() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
         </button>
-        <div 
+        <div
           ref={scrollContainerRef}
           className="overflow-x-auto whitespace-nowrap px-8 scrollbar-hide"
           style={{ scrollBehavior: 'smooth' }}
         >
-          <Link 
-            href="/" 
+          <Link
+            href="/"
             className={`text-sm mr-4 px-3 py-1.5 rounded-full transition-colors duration-200
-              ${!selectedTag 
-                ? 'bg-blue-100 text-blue-600 font-medium' 
+              ${!selectedTag
+                ? 'bg-blue-100 text-blue-600 font-medium'
                 : 'text-gray-600 hover:bg-gray-100'
               }`}
           >
