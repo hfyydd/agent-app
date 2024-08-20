@@ -38,7 +38,7 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
   const router = useRouter();
 
   const [localViews, setLocalViews] = useState(views); // 本地保存的浏览次数
-  const [localDownloads, setLocalDownloads] = useState(downloads); // 本地保存的浏���次数
+  const [localDownloads, setLocalDownloads] = useState(downloads); // 本地保存的浏次数
 
   useEffect(() => {
     async function fetchTags() {
@@ -146,7 +146,7 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
 
     if (purchaseError && purchaseError.code !== 'PGRST116') {
       console.error('Error checking purchase:', purchaseError);
-      alert('��查购买记录时出错，请重试');
+      alert('查购买记录时出错，请重试');
       return;
     }
 
@@ -221,7 +221,7 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
 
   return (
     <>
-      <div className="bg-white rounded-lg shadow-md p-4 hover:shadow-xl hover:scale-105 transition duration-300 ease-in-out flex flex-col h-full cursor-pointer" onClick={handleOpenModal}>
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 hover:shadow-xl hover:scale-105 transition duration-300 ease-in-out flex flex-col h-full cursor-pointer" onClick={handleOpenModal}>
         <div className="flex items-start mb-3">
           {icon_url && (
             <div className="w-20 h-20 flex-shrink-0 relative overflow-hidden rounded-lg mr-3">
@@ -235,17 +235,17 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
             </div>
           )}
           <div className="flex-grow">
-            <h3 className="font-bold text-lg mb-1">{title}</h3>
-            <div className="flex items-center text-gray-500 text-sm">
+            <h3 className="font-bold text-lg mb-1 dark:text-white">{title}</h3>
+            <div className="flex items-center text-gray-500 dark:text-gray-400 text-sm">
               {renderPrice()}
             </div>
           </div>
         </div>
-        <p className="text-gray-600 text-sm mb-3 line-clamp-3">{description}</p>
+        <p className="text-gray-600 dark:text-gray-300 text-sm mb-3 line-clamp-3">{description}</p>
         <div className="flex flex-wrap gap-1 mb-3">
           {renderTags()}
         </div>
-        <div className="mt-auto flex justify-between items-center text-gray-500 text-sm">
+        <div className="mt-auto flex justify-between items-center text-gray-500 dark:text-gray-400 text-sm">
           <span className="flex items-center cursor-pointer">
             <FaEye className="mr-1" /> {localViews}
           </span>
@@ -257,17 +257,17 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg w-full max-w-2xl h-[80vh] flex flex-col relative"> {/* 增加宽度和高度 */}
+          <div className="bg-white dark:bg-gray-800 rounded-lg w-full max-w-2xl h-[80vh] flex flex-col relative">
             <button
               onClick={() => setIsModalOpen(false)}
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
             >
               <FaTimes />
             </button>
-            <div className="p-6 flex-grow overflow-y-auto"> {/* 增加内边距 */}
-              <h2 className="text-2xl font-bold mb-3">{title}</h2> {/* 增加标题大小 */}
+            <div className="p-6 flex-grow overflow-y-auto">
+              <h2 className="text-2xl font-bold mb-3 dark:text-white">{title}</h2>
               {renderPrice()}
-              <div className="mt-4 mb-4 prose prose-sm max-w-none"> {/* 增加间距 */}
+              <div className="mt-4 mb-4 prose prose-sm max-w-none dark:prose-invert">
                 <ReactMarkdown>{description}</ReactMarkdown>
               </div>
               {content_image_url && (
@@ -275,10 +275,10 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
                   <img src={content_image_url} alt="Content image" className="w-full h-auto rounded-lg" />
                 </div>
               )}
-              <div className="mb-4 flex flex-wrap">{renderTags()}</div> {/* 增加间距 */}
+              <div className="mb-4 flex flex-wrap">{renderTags()}</div>
             </div>
-            <div className="p-6 border-t"> {/* 增加底部内边距 */}
-              <div className="flex justify-end space-x-4"> {/* 增加按钮间距 */}
+            <div className="p-6 border-t dark:border-gray-700">
+              <div className="flex justify-end space-x-4">
                 <button
                   onClick={handleViewInChat}
                   className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded transition duration-300 flex items-center text-base" 

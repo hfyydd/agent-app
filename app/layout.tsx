@@ -1,6 +1,7 @@
 import { GeistSans } from "geist/font/sans";
 import "./globals.css";
 import NavBar from '@/components/NavBar';
+import { Providers } from '@/components/Providers'
 
 export const metadata = {
   title: '考拉的交易市集',
@@ -19,10 +20,12 @@ export default function RootLayout({
   return (
     <html lang="en" className={GeistSans.className}>
       <body className="flex flex-col min-h-screen bg-background text-foreground">
-        <NavBar />
-        <main className="flex-grow">
+        <Providers>
+          <NavBar />
+          <main className="flex-grow">
             {children}
-        </main>
+          </main>
+        </Providers>
       </body>
     </html>
   );

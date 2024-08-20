@@ -68,7 +68,7 @@ const PurchasesPage: React.FC = () => {
 
   return (
     <div className="p-6 max-w-full mx-auto">
-      <h1 className="text-2xl font-bold mb-6">交易记录</h1>
+      <h1 className="text-2xl font-bold mb-6 dark:text-white">交易记录</h1>
       <button
         onClick={fetchPurchases}
         className="mb-4 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
@@ -76,23 +76,23 @@ const PurchasesPage: React.FC = () => {
         刷新交易记录
       </button>
       {purchases.length === 0 ? (
-        <p className="text-center text-gray-500">暂无交易记录</p>
+        <p className="text-center text-gray-500 dark:text-gray-400">暂无交易记录</p>
       ) : (
-        <div className="bg-white shadow overflow-x-auto sm:rounded-lg">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+        <div className="bg-white dark:bg-gray-800 shadow overflow-x-auto sm:rounded-lg">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead className="bg-gray-50 dark:bg-gray-700">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">工作流名称</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">金额</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">下载时间</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">工作流名称</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">金额</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">下载时间</th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
               {purchases.map((purchase) => (
                 <tr key={purchase.id}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{purchase.workflows?.name || '未知工作流'}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">🐨{purchase.amount.toFixed(2)}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{purchase.workflows?.name || '未知工作流'}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">🐨{purchase.amount.toFixed(2)}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                     {new Date(purchase.created_at).toLocaleString()}
                   </td>
                 </tr>

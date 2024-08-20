@@ -5,6 +5,7 @@ import NavLink from './NavLink';
 import { navItems } from '../lib/navConfig';
 import MobileMenu from './MobileMenu';
 import TotalViews from './TotalViews';
+import ThemeToggle from './ThemeToggle'; // Added ThemeToggle component
 
 // 假设你的版本号存储在某个配置文件中
 // config.js 或 config.ts
@@ -29,13 +30,14 @@ export default function NavBar() {
             <NavLink key={item.href} {...item} />
           ))}
           <div className="flex items-center space-x-2">
-            
+            <ThemeToggle /> {/* Added ThemeToggle component */}
             <AuthButton />
           </div>
         </div>
         <MobileMenu navItems={navItems}>
           <div className="flex items-center justify-between">
             <TotalViews />
+            <ThemeToggle /> {/* Added ThemeToggle component */}
             <AuthButton />
           </div>
         </MobileMenu>

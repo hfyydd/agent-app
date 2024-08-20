@@ -97,31 +97,31 @@ export default function WorkflowClient({ initialWorkflows, userId }: { initialWo
 
   return (
     <div className="p-4 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6">我的 Workflows</h1>
+      <h1 className="text-2xl font-bold mb-6 dark:text-white">我的 Workflows</h1>
 
       <button
         onClick={() => setIsDialogOpen(true)}
-        className="mb-6 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
+        className="mb-6 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors dark:bg-blue-600 dark:hover:bg-blue-700"
       >
         上传 Workflow
       </button>
 
       {workflows.length === 0 ? (
-        <p>还没有 workflows 上传 😭.</p>
+        <p className="dark:text-gray-300">还没有 workflows 上传 😭.</p>
       ) : (
         <ul className="space-y-4">
           {workflows.map((workflow) => (
-            <li key={workflow.id} className="bg-white p-4 rounded shadow flex items-center">
+            <li key={workflow.id} className="bg-white dark:bg-gray-800 p-4 rounded shadow flex items-center">
               <img src={workflow.icon_url || '/default-icon.png'} alt={workflow.name} className="w-12 h-12 mr-4" />
               <div className="flex-grow">
-                <h2 className="text-lg font-semibold">{workflow.name}</h2>
-                <p className="text-gray-600">{workflow.description}</p>
-                <p className="text-sm text-gray-500">Created: {new Date(workflow.created_at).toLocaleString()}</p>
+                <h2 className="text-lg font-semibold dark:text-white">{workflow.name}</h2>
+                <p className="text-gray-600 dark:text-gray-300">{workflow.description}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Created: {new Date(workflow.created_at).toLocaleString()}</p>
                 <p className={`text-sm font-semibold ${getStatusColor(workflow.approved)}`}>
                   审核状态: {getStatusText(workflow.approved)}
                 </p>
                 {workflow.rejection_reason && (
-                  <p className="text-sm text-red-500">
+                  <p className="text-sm text-red-500 dark:text-red-400">
                     拒绝原因: {workflow.rejection_reason}
                   </p>
                 )}
@@ -137,7 +137,7 @@ export default function WorkflowClient({ initialWorkflows, userId }: { initialWo
                     a.click();
                     URL.revokeObjectURL(url);
                   }}
-                  className="p-2 bg-green-500 text-white rounded-full hover:bg-green-600 transition-colors"
+                  className="p-2 bg-green-500 text-white rounded-full hover:bg-green-600 transition-colors dark:bg-green-600 dark:hover:bg-green-700"
                   title="下载"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -146,7 +146,7 @@ export default function WorkflowClient({ initialWorkflows, userId }: { initialWo
                 </button>
                 <button
                   onClick={() => handleUpdate(workflow)}
-                  className="p-2 bg-yellow-500 text-white rounded-full hover:bg-yellow-600 transition-colors"
+                  className="p-2 bg-yellow-500 text-white rounded-full hover:bg-yellow-600 transition-colors dark:bg-yellow-600 dark:hover:bg-yellow-700"
                   title="更新"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -155,7 +155,7 @@ export default function WorkflowClient({ initialWorkflows, userId }: { initialWo
                 </button>
                 <button
                   onClick={() => handleDelete(workflow.id)}
-                  className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+                  className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors dark:bg-red-600 dark:hover:bg-red-700"
                   title="删除"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">

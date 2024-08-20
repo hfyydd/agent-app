@@ -29,6 +29,9 @@ importers:
       '@gregnr/postgres-meta':
         specifier: ^0.82.0-dev.2
         version: 0.82.0-dev.2(encoding@0.1.13)
+      '@heroicons/react':
+        specifier: ^2.1.5
+        version: 2.1.5(react@18.2.0)
       '@monaco-editor/react':
         specifier: ^4.6.0
         version: 4.6.0(monaco-editor@0.49.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -457,6 +460,11 @@ packages:
   '@gregnr/postgres-meta@0.82.0-dev.2':
     resolution: {integrity: sha512-RLCMcshNBZi1FBA60PfQTLCvfuYmNXVzRe147j5mlOIXvq+o9K/pJgm49GOEBBYfvH+bwcs3w/mBRCh7BNveng==}
     engines: {node: '>=20', npm: '>=9'}
+
+  '@heroicons/react@2.1.5':
+    resolution: {integrity: sha512-FuzFN+BsHa+7OxbvAERtgBTNeZpUjgM/MIizfVkSCL2/edriN0Hx/DWRCR//aPYwO5QX/YlgLGXk+E3PcfZwjA==}
+    peerDependencies:
+      react: '>= 16'
 
   '@huggingface/jinja@0.2.2':
     resolution: {integrity: sha512-/KPde26khDUIPkTGU82jdtTW9UAuvUTumCAbFs/7giR0SxsvZC4hru51PBvpijH6BVkHcROcvZM/lpy5h1jRRA==}
@@ -4062,6 +4070,10 @@ snapshots:
       - encoding
       - pg-native
       - supports-color
+
+  '@heroicons/react@2.1.5(react@18.2.0)':
+    dependencies:
+      react: 18.2.0
 
   '@huggingface/jinja@0.2.2': {}
 

@@ -102,7 +102,7 @@ const AdminPage: React.FC = () => {
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">管理员管理</h1>
+      <h1 className="text-3xl font-bold mb-6 dark:text-white">管理员管理</h1>
       <div className="mb-4 flex justify-between items-center">
         <button
           onClick={fetchUsers}
@@ -116,31 +116,31 @@ const AdminPage: React.FC = () => {
             placeholder="搜索邮箱..."
             value={searchTerm}
             onChange={handleSearch}
-            className="border border-gray-300 rounded-md py-2 px-4 pr-10 w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-4 pr-10 w-64 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
           />
-          <span className="absolute right-3 top-2.5 text-gray-400">
+          <span className="absolute right-3 top-2.5 text-gray-400 dark:text-gray-300">
             <FaSearch />
           </span>
         </div>
       </div>
-      <div className="bg-white shadow-md rounded-lg overflow-hidden">
+      <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg overflow-hidden">
         <div className="overflow-x-auto">
           <div className="max-h-[calc(100vh-300px)] overflow-y-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50 sticky top-0">
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+              <thead className="bg-gray-50 dark:bg-gray-700 sticky top-0">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">用户名</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">邮箱</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">余额</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">用户名</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">邮箱</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">余额</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">操作</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                 {filteredUsers.map((user) => (
                   <tr key={user.id}>
-                    <td className="px-6 py-4 whitespace-nowrap">{user.user_metadata?.username || 'N/A'}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">{user.email}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">{user.balance.toFixed(2)}</td>
+                    <td className="px-6 py-4 whitespace-nowrap dark:text-white">{user.user_metadata?.username || 'N/A'}</td>
+                    <td className="px-6 py-4 whitespace-nowrap dark:text-white">{user.email}</td>
+                    <td className="px-6 py-4 whitespace-nowrap dark:text-white">{user.balance.toFixed(2)}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <button
                         onClick={() => handleRecharge(user)}
@@ -156,7 +156,7 @@ const AdminPage: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="mt-4 text-right text-gray-600">
+      <div className="mt-4 text-right text-gray-600 dark:text-gray-300">
         总用户数: {users.length} | 当前显示: {filteredUsers.length}
       </div>
       {isDialogOpen && selectedUser && (

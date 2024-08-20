@@ -117,13 +117,13 @@ export default function ReviewPage() {
 
   return (
     <div className="p-4 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6">Workflows 审核</h1>
+      <h1 className="text-2xl font-bold mb-6 dark:text-white">Workflows 审核</h1>
 
       <div className="mb-4 flex space-x-4">
         <select 
           value={filterStatus} 
           onChange={(e) => setFilterStatus(e.target.value)}
-          className="p-2 border rounded"
+          className="p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
         >
           <option value="all">全部</option>
           <option value="pending">未审批</option>
@@ -135,25 +135,25 @@ export default function ReviewPage() {
           placeholder="搜索..." 
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="p-2 border rounded flex-grow"
+          className="p-2 border rounded flex-grow dark:bg-gray-700 dark:text-white dark:border-gray-600"
         />
       </div>
 
       {filteredWorkflows.length === 0 ? (
-        <p>没有匹配的 workflows.</p>
+        <p className="dark:text-white">没有匹配的 workflows.</p>
       ) : (
         <ul className="space-y-4">
           {filteredWorkflows.map((workflow) => (
-            <li key={workflow.id} className="bg-white p-4 rounded shadow flex items-center">
+            <li key={workflow.id} className="bg-white dark:bg-gray-800 p-4 rounded shadow flex items-center">
               <img src={workflow.icon_url || '/default-icon.png'} alt={workflow.name} className="w-12 h-12 mr-4" />
               <div className="flex-grow">
-                <h2 className="text-lg font-semibold">{workflow.name}</h2>
-                <p className="text-gray-600">{workflow.description}</p>
-                <p className="text-sm text-gray-500">Created: {new Date(workflow.created_at).toLocaleString()}</p>
-                <p className="text-sm text-gray-500">User ID: {workflow.user_id}</p>
-                <p className="text-sm text-gray-500">Price: ${workflow.price}</p>
-                <p className="text-sm text-gray-500">Type: {workflow.type}</p>
-                <p className="text-sm text-gray-500">Tags: {workflow.tags.join(', ')}</p>
+                <h2 className="text-lg font-semibold dark:text-white">{workflow.name}</h2>
+                <p className="text-gray-600 dark:text-gray-300">{workflow.description}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Created: {new Date(workflow.created_at).toLocaleString()}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">User ID: {workflow.user_id}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Price: ${workflow.price}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Type: {workflow.type}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Tags: {workflow.tags.join(', ')}</p>
                 <p className={`text-sm font-semibold ${
                   workflow.approved === 'pending'
                     ? 'text-yellow-500'
@@ -221,7 +221,7 @@ export default function ReviewPage() {
               <>
                 <p>你确定要拒绝这个 workflow 吗？</p>
                 <textarea
-                  className="mt-2 w-full p-2 border rounded"
+                  className="mt-2 w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
                   placeholder="请输入拒绝原因"
                   value={rejectionReason}
                   onChange={(e) => setRejectionReason(e.target.value)}

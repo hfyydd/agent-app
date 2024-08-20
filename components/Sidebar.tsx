@@ -57,14 +57,14 @@ const Sidebar = () => {
 
 
   return (
-    <div className="w-64 bg-gray-100 min-h-[calc(100vh-4rem)] overflow-y-auto">
+    <div className="w-64 bg-gray-100 dark:bg-gray-800 min-h-[calc(100vh-4rem)] overflow-y-auto">
       <div className="py-4">
         {menuStructure.map((section) => (
           <div key={section.id} className="mb-4">
             {/* 只有管理员可以看到管理员功能 */}
             {(section.id !== 4 || isAdmin) && (
               <>
-                <div className="px-6 py-2 text-sm font-semibold text-gray-500">
+                <div className="px-6 py-2 text-sm font-semibold text-gray-500 dark:text-gray-400">
                   {section.title}
                 </div>
                 {section.items.map((item) => (
@@ -73,8 +73,8 @@ const Sidebar = () => {
                     href={item.path}
                     className={`block px-6 py-2 cursor-pointer transition-colors duration-200 ${
                       pathname === item.path
-                        ? 'bg-blue-500 text-white' 
-                        : 'hover:bg-gray-200'
+                        ? 'bg-blue-500 text-white dark:bg-blue-600' 
+                        : 'hover:bg-gray-200 dark:hover:bg-gray-700'
                     }`}
                   >
                     {item.name}

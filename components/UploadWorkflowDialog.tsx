@@ -96,7 +96,7 @@ const UploadWorkflowDialog: React.FC<UploadWorkflowDialogProps> = ({
         throw new Error('未找到用户');
       }
 
-      // 读取文件内容
+      // ���取文件内容
       const fileContent = await file.text();
 
       let iconUrl = null;
@@ -196,12 +196,12 @@ const UploadWorkflowDialog: React.FC<UploadWorkflowDialogProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 overflow-y-auto">
-      <div className="bg-white rounded-lg shadow-xl w-[480px] max-w-full my-8 mx-auto">
-        <div className="flex justify-between items-center px-6 py-4 border-b border-gray-200 sticky top-0 bg-white z-10">
-          <h2 className="text-xl font-semibold text-gray-800">
+      <div className="bg-gray-800 rounded-lg shadow-xl w-[480px] max-w-full my-8 mx-auto text-white">
+        <div className="flex justify-between items-center px-6 py-4 border-b border-gray-700 sticky top-0 bg-gray-800 z-10">
+          <h2 className="text-xl font-semibold text-white">
             上传 {uploadType === 'workflow' ? 'Workflow(支持 dify格式和JSON 格式)' : 'Prompt'}
           </h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-200">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -210,37 +210,37 @@ const UploadWorkflowDialog: React.FC<UploadWorkflowDialogProps> = ({
         <div className="max-h-[calc(100vh-4rem)] overflow-y-auto">
           <form onSubmit={handleSubmit} className="px-6 py-4 space-y-4">
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-300 mb-1">
                 上传类型 <span className="text-red-500">*</span>
               </label>
               <div className="flex space-x-4">
                 <label className="inline-flex items-center">
                   <input
                     type="radio"
-                    className="form-radio"
+                    className="form-radio text-blue-500"
                     name="uploadType"
                     value="workflow"
                     checked={uploadType === 'workflow'}
                     onChange={() => setUploadType('workflow')}
                   />
-                  <span className="ml-2">Workflow</span>
+                  <span className="ml-2 text-gray-300">Workflow</span>
                 </label>
                 <label className="inline-flex items-center">
                   <input
                     type="radio"
-                    className="form-radio"
+                    className="form-radio text-blue-500"
                     name="uploadType"
                     value="prompt"
                     checked={uploadType === 'prompt'}
                     onChange={() => setUploadType('prompt')}
                   />
-                  <span className="ml-2">Prompt</span>
+                  <span className="ml-2 text-gray-300">Prompt</span>
                 </label>
               </div>
             </div>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="name">
+              <label className="block text-sm font-medium text-gray-300 mb-1" htmlFor="name">
                 {uploadType === 'workflow' ? 'Workflow' : 'Prompt'} 名称 <span className="text-red-500">*</span>
               </label>
               <input
@@ -248,37 +248,37 @@ const UploadWorkflowDialog: React.FC<UploadWorkflowDialogProps> = ({
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-white"
                 placeholder={`给 ${uploadType === 'workflow' ? 'workflow' : 'prompt'} 起一个独一无二的名字`}
                 required
                 maxLength={40}
               />
-              <p className="text-xs text-gray-500 mt-1 text-right">{name.length}/40</p>
+              <p className="text-xs text-gray-400 mt-1 text-right">{name.length}/40</p>
             </div>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="description">
+              <label className="block text-sm font-medium text-gray-300 mb-1" htmlFor="description">
                 {uploadType === 'workflow' ? 'Workflow ' : 'Prompt'} 简介
               </label>
               <textarea
                 id="description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-white"
                 rows={3}
                 placeholder={`介绍 ${uploadType === 'workflow' ? 'workflow' : 'prompt'} 的功能， 将会展示给用户，支持 Markdown 格式`}
                 maxLength={800}
               />
-              <p className="text-xs text-gray-500 mt-1 text-right">{description.length}/800</p>
+              <p className="text-xs text-gray-400 mt-1 text-right">{description.length}/800</p>
             </div>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="price">
+              <label className="block text-sm font-medium text-gray-300 mb-1" htmlFor="price">
                 价格 (🐨) <span className="text-red-500">*</span>     🐨10 = ￥1
               </label>
               <div className="relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <span className="text-gray-500 sm:text-sm">🐨</span>
+                  <span className="text-gray-400 sm:text-sm">🐨</span>
                 </div>
                 <input
                   id="price"
@@ -287,19 +287,19 @@ const UploadWorkflowDialog: React.FC<UploadWorkflowDialogProps> = ({
                   step="0.01"
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
-                  className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md"
+                  className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-7 pr-12 sm:text-sm bg-gray-700 border-gray-600 rounded-md text-white"
                   placeholder="0.00"
                   required
                 />
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                  <span className="text-gray-500 sm:text-sm">考拉币</span>
+                  <span className="text-gray-400 sm:text-sm">考拉币</span>
                 </div>
               </div>
             </div>
 
             {uploadType === 'workflow' && (
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="testUrl">
+                <label className="block text-sm font-medium text-gray-300 mb-1" htmlFor="testUrl">
                   测试 URL
                 </label>
                 <input
@@ -307,14 +307,14 @@ const UploadWorkflowDialog: React.FC<UploadWorkflowDialogProps> = ({
                   type="url"
                   value={testUrl}
                   onChange={(e) => setTestUrl(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-white"
                   placeholder="https://ip/chat/workflow_id"
                 />
               </div>
             )}
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-300 mb-1">
                 Tags <span className="text-red-500">*</span>
               </label>
               <div className="flex flex-wrap gap-2">
@@ -322,18 +322,18 @@ const UploadWorkflowDialog: React.FC<UploadWorkflowDialogProps> = ({
                   <label key={tag.id} className="inline-flex items-center">
                     <input
                       type="checkbox"
-                      className="form-checkbox h-5 w-5 text-blue-600"
+                      className="form-checkbox h-5 w-5 text-blue-600 bg-gray-700 border-gray-600"
                       checked={selectedTags.includes(tag.id)}
                       onChange={() => handleTagChange(tag.id)}
                     />
-                    <span className="ml-2 text-gray-700">{tag.name}</span>
+                    <span className="ml-2 text-gray-300">{tag.name}</span>
                   </label>
                 ))}
               </div>
             </div>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="icon">
+              <label className="block text-sm font-medium text-gray-300 mb-1" htmlFor="icon">
                 图标 (可选)
               </label>
               <input
@@ -347,20 +347,20 @@ const UploadWorkflowDialog: React.FC<UploadWorkflowDialogProps> = ({
                 {icon ? (
                   <img src={URL.createObjectURL(icon)} alt="Selected icon" className="w-16 h-16 rounded-lg object-cover" />
                 ) : (
-                  <div className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center text-gray-400">
+                  <div className="w-16 h-16 bg-gray-700 rounded-lg flex items-center justify-center text-gray-400">
                     <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                   </div>
                 )}
-                <label htmlFor="icon" className="px-4 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer">
+                <label htmlFor="icon" className="px-4 py-2 bg-gray-700 border border-gray-600 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer">
                   上传
                 </label>
               </div>
             </div>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="contentImage">
+              <label className="block text-sm font-medium text-gray-300 mb-1" htmlFor="contentImage">
                 内容图片 (可选)
               </label>
               <input
@@ -374,20 +374,20 @@ const UploadWorkflowDialog: React.FC<UploadWorkflowDialogProps> = ({
                 {contentImage ? (
                   <img src={URL.createObjectURL(contentImage)} alt="Selected content image" className="w-32 h-32 rounded-lg object-cover" />
                 ) : (
-                  <div className="w-32 h-32 bg-gray-200 rounded-lg flex items-center justify-center text-gray-400">
+                  <div className="w-32 h-32 bg-gray-700 rounded-lg flex items-center justify-center text-gray-400">
                     <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                   </div>
                 )}
-                <label htmlFor="contentImage" className="px-4 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer">
+                <label htmlFor="contentImage" className="px-4 py-2 bg-gray-700 border border-gray-600 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer">
                   上传内容图片
                 </label>
               </div>
             </div>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="file">
+              <label className="block text-sm font-medium text-gray-300 mb-1" htmlFor="file">
                 文件 <span className="text-red-500">*</span>
               </label>
               <input
@@ -398,19 +398,19 @@ const UploadWorkflowDialog: React.FC<UploadWorkflowDialogProps> = ({
                 className="hidden"
                 required
               />
-              <label htmlFor="file" className="flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer">
+              <label htmlFor="file" className="flex items-center justify-center px-4 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-300 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer">
                 {file ? file.name : `选择 ${uploadType === 'workflow' ? 'YAML/JSON' : 'TXT'} 文件`}
               </label>
             </div>
           </form>
 
         </div>
-        <div className="sticky bottom-0 bg-white py-4 px-6 border-t border-gray-200">
+        <div className="sticky bottom-0 bg-gray-800 py-4 px-6 border-t border-gray-700">
           <div className="flex justify-end space-x-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              className="px-4 py-2 border border-gray-600 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
               取消
             </button>
