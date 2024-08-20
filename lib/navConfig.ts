@@ -7,7 +7,7 @@ export interface NavItem {
   }
   
   export const navItems: NavItem[] = [
-    { href: '/store', label: '商城', enabled: true },
+    { href: '/store', label: '市集', enabled: true },
     { href: '/education', label: '教育', enabled: true },
     { href: '/dbchat', label: ' 对话数据', enabled: true},
     { href: '/bvideos', label: 'B 站视频', enabled: true },
