@@ -4,6 +4,7 @@ import AuthButton from "./AuthButton";
 import NavLink from './NavLink';
 import { navItems } from '../lib/navConfig';
 import MobileMenu from './MobileMenu';
+import TotalViews from './TotalViews';
 
 // 假设你的版本号存储在某个配置文件中
 // config.js 或 config.ts
@@ -19,6 +20,7 @@ export default function NavBar() {
               <Image src="/images/koala.svg" alt="Logo" width={32} height={32} />
               <span className="font-bold text-lg sm:text-xl">考拉的交易市集</span>
               <span className="text-xs text-gray-500">v{VERSION}</span>
+              <TotalViews />
             </div>
           } />
         </div>
@@ -33,6 +35,7 @@ export default function NavBar() {
         </div>
         <MobileMenu navItems={navItems}>
           <div className="flex items-center justify-between">
+            <TotalViews />
             <AuthButton />
           </div>
         </MobileMenu>
