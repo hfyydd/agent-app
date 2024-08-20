@@ -50,6 +50,7 @@ const Sidebar = () => {
         { id: 'transaction', name: '充值记录', path: '/dashboard/transaction' },
         { id: 'purchases', name: '交易记录', path: '/dashboard/purchases' },
         { id: 'review', name: '审核记录', path: '/dashboard/review' },
+        { id: 'videos', name: '上传视频', path: '/dashboard/bvideos' },
       ]
     }
   ];

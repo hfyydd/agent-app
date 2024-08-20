@@ -6,6 +6,8 @@ import Head from 'next/head';
 interface Video {
   id: string;
   url: string;
+  title: string;
+  sort_order: number;
 }
 
 export default function VideoPage() {
@@ -16,12 +18,12 @@ export default function VideoPage() {
       const supabase = createClient();
       const { data, error } = await supabase
         .from('videos')
-        .select('*');
+        .select('*')
+        .order('sort_order', { ascending: true });
 
       if (error) {
         console.error('Error fetching videos:', error);
       } else {
-        console.log(data);
         setVideos(data || []);
       }
     };
@@ -58,6 +60,7 @@ export default function VideoPage() {
         <div className="grid grid-cols-3 gap-8">
           {videos.map((video) => (
             <div key={video.id} className="bg-white rounded-lg shadow-md overflow-hidden w-full">
+              <h3 className="text-lg font-semibold p-4">{video.title}</h3>
               <div className="aspect-w-16 aspect-h-9">
                 <div className="w-full h-0 pb-[56.25%] relative">
                   <div
@@ -94,4 +97,3 @@ export default function VideoPage() {
     </>
   );
 }
-
