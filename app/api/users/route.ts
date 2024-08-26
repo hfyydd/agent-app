@@ -19,7 +19,7 @@ interface Account {
 }
 
 // 定义我们要返回的用户类型
-interface UserWithBalance {
+export interface UserWithBalance {
   id: string;
   email?: string;
   user_metadata: {

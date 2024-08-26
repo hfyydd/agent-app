@@ -4,6 +4,8 @@
 import { useSearchParams } from "next/navigation";
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import ToolCard from "@/components/ToolCard";
+import { useUser } from "@/hooks/useUser";
+import { createClient } from "@/utils/supabase/client";
 
 export interface Workflow {
   id: string;
@@ -34,7 +36,9 @@ export default function WorkflowList({ workflows }: WorkflowListProps) {
   const searchParams = useSearchParams();
   const tagId = searchParams.get('tag');
   const searchTerm = searchParams.get('search');
+  const { user} = useUser(); // 获取用户信息
 
+  
   const filteredAndSortedWorkflows = useMemo(() => {
     return workflows
       .filter(workflow => {
@@ -59,6 +63,28 @@ export default function WorkflowList({ workflows }: WorkflowListProps) {
         }
       });
   }, [workflows, tagId, searchTerm, sortBy]);
+
+  // useEffect(() => {
+  //   const fetchUserBalance = async () => {
+  //     if (user) {
+  //       const { data, error } = await supabase
+  //         .from('accounts')
+  //         .select('balance')
+  //         .eq('user_id', user.id)
+  //         .single();
+  //       if (data) {
+  //         setUserBalance(data.balance);
+  //       } else if (error) {
+  //         console.error('Error fetching user balance:', error);
+  //       }
+  //     }
+  //   };
+
+  //   fetchUserBalance();
+  // }, [user]);
+
+
+
 
   const loadMoreWorkflows = useCallback(() => {
     setVisibleWorkflows(prev => {
@@ -136,6 +162,7 @@ export default function WorkflowList({ workflows }: WorkflowListProps) {
             views={workflow.views}
             downloads={workflow.downloads}
             content_image_url={workflow.content_image_url}
+            user={user}
           />
         ))}
       </div>

@@ -6,6 +6,12 @@ import { useUser } from '@/hooks/useUser';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import ReactMarkdown from 'react-markdown';
+import { User } from '@supabase/supabase-js';
+
+// 在文件顶部添加这个接口
+interface ExtendedUser extends User {
+  balance?: number;
+}
 
 interface ToolCardProps {
   id: string;
@@ -20,6 +26,7 @@ interface ToolCardProps {
   test_url?: string;
   downloads?: number;
   content_image_url?: string;
+  user: ExtendedUser | null;
 }
 
 interface Tag {
@@ -27,14 +34,10 @@ interface Tag {
   name: string;
 }
 
-export default function ToolCard({ id, title, description, tagIds, content, price, icon_url, views = 0, test_url, downloads = 0, content_image_url }: ToolCardProps) {
+export default function ToolCard({ id, title, description, tagIds, content, price, icon_url, views = 0, test_url, downloads = 0, content_image_url, user }: ToolCardProps) {
   const [tags, setTags] = useState<Tag[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const supabase = createClient();
-  //const [favorites, setFavorites] = useState(0);
-
-  const [userBalance, setUserBalance] = useState(0);
-  const { user } = useUser();
   const router = useRouter();
 
   const [localViews, setLocalViews] = useState(views); // 本地保存的浏览次数
@@ -56,20 +59,7 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
       }
     }
 
-    async function fetchUserBalance() {
-      if (user) {
-        const { data, error } = await supabase
-          .from('accounts')
-          .select('balance')
-          .eq('user_id', user.id)
-          .single();
-        if (data) {
-          setUserBalance(data.balance);
-        } else if (error) {
-          console.error('Error fetching user balance:', error);
-        }
-      }
-    }
+
     // async function fetchFavorites() {
     //   const { count, error } = await supabase
     //     .from('purchases')
@@ -86,7 +76,6 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
     // fetchFavorites();
 
     fetchTags();
-    fetchUserBalance();
   }, [tagIds, user, supabase]);
 
   const handleViewInChat = () => {
@@ -137,25 +126,37 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
       return;
     }
 
-    const { data: purchaseData, error: purchaseError } = await supabase
-      .from('purchases')
-      .select('*')
-      .eq('user_id', user.id)
-      .eq('workflow_id', id)
-      .single();
+    try {
+      const { data: purchaseData, error: purchaseError } = await supabase
+        .from('purchases')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('workflow_id', id)
+        .single();
 
-    if (purchaseError && purchaseError.code !== 'PGRST116') {
-      console.error('Error checking purchase:', purchaseError);
-      alert('查购买记录时出错，请重试');
-      return;
+      if (purchaseError) {
+        if (purchaseError.code === 'PGRST116') {
+          // 没有找到购买记录,继续处理新购买
+          await handleNewPurchase();
+        } else {
+          // 其他错误
+          console.error('查询购买记录时出错:', purchaseError);
+          alert('查询购买记录时出错，请重试');
+        }
+        return;
+      }
+
+      if (purchaseData) {
+        // 用户已经购买过，直接下载
+        downloadWorkflow();
+      }
+    } catch (error) {
+      console.error('查询购买记录时发生异常:', error);
+      alert('发生意外错误，请重试');
     }
+  };
 
-    if (purchaseData) {
-      // 用户已经购买过，直接下载
-      downloadWorkflow();
-      return;
-    }
-
+  const handleNewPurchase = async () => {
     if (!price || price <= 0) {
       // 如果工作流是免费的，直接下载
       const { data, error } = await supabase.rpc('purchase_workflow', {
@@ -171,11 +172,13 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
       }
       return;
     }
-    if (userBalance < price) {
+  
+    if (user?.balance && user.balance < price) {
       alert('余额不足，请前往充值页面充值');
       router.push('/dashboard/recharge');
       return;
     }
+  
     const isConfirmed = window.confirm(`确认下载吗？将从您的账户中扣除 🐨${price.toFixed(2)}`);
 
     if (isConfirmed) {
@@ -188,7 +191,6 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
         console.error('Purchase failed:', error);
         alert('购买失败，请重试');
       } else {
-        setUserBalance(prevBalance => prevBalance - price);
         downloadWorkflow();
         setLocalDownloads(prevDownloads => prevDownloads + 1);
       }
@@ -214,7 +216,7 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
 
     // Release the URL object
     URL.revokeObjectURL(url);
-    
+
   };
 
 
@@ -225,12 +227,12 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
         <div className="flex items-start mb-3">
           {icon_url && (
             <div className="w-20 h-20 flex-shrink-0 relative overflow-hidden rounded-lg mr-3">
-              <Image 
-                src={icon_url} 
-                alt={title} 
-                layout="fill" 
-                objectFit="cover"
-                className="rounded-lg"
+              <Image
+                src={icon_url}
+                alt={title}
+                fill
+                className="rounded-lg object-cover"
+                sizes="80px"
               />
             </div>
           )}
@@ -281,13 +283,13 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
               <div className="flex justify-end space-x-4">
                 <button
                   onClick={handleViewInChat}
-                  className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded transition duration-300 flex items-center text-base" 
+                  className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded transition duration-300 flex items-center text-base"
                 >
                   <FaEye className="mr-2" /> 测试
                 </button>
                 <button
                   onClick={handleDownload}
-                  className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded transition duration-300 flex items-center text-base" 
+                  className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded transition duration-300 flex items-center text-base"
                 >
                   <FaDownload className="mr-2" /> 下载
                 </button>
