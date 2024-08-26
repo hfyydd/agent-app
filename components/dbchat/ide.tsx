@@ -44,11 +44,11 @@ export default function IDE({ children, className }: IDEProps) {
     const sqlExecutions =
       messages
         ?.flatMap((message) => {
-          
+
           if (!message.toolInvocations) {
             return
           }
-          
+
           const toolInvocations = message.toolInvocations as ToolInvocation[]
 
           return toolInvocations
@@ -69,32 +69,32 @@ export default function IDE({ children, className }: IDEProps) {
 
     for (const sql of sqlExecutions) {
       if (sql) {
-      const parseResult = await parseQuery(sql)
-      assertDefined(parseResult.stmts, 'Expected stmts to exist in parse result')
+        const parseResult = await parseQuery(sql)
+        assertDefined(parseResult.stmts, 'Expected stmts to exist in parse result')
 
-      const migrationStmts = parseResult.stmts.filter(isMigrationStatement)
+        const migrationStmts = parseResult.stmts.filter(isMigrationStatement)
 
-      if (migrationStmts.length > 0) {
-        const filteredAst: ParseResult = {
-          version: parseResult.version,
-          stmts: migrationStmts,
+        if (migrationStmts.length > 0) {
+          const filteredAst: ParseResult = {
+            version: parseResult.version,
+            stmts: migrationStmts,
+          }
+
+          const migrationSql = await deparse(filteredAst)
+
+          const formattedSql = format(migrationSql, {
+            language: 'postgresql',
+            keywordCase: 'lower',
+            identifierCase: 'lower',
+            dataTypeCase: 'lower',
+            functionCase: 'lower',
+          })
+
+          const withSemicolon = formattedSql.endsWith(';') ? formattedSql : `${formattedSql};`
+
+          migrations.push(withSemicolon)
         }
-
-        const migrationSql = await deparse(filteredAst)
-
-        const formattedSql = format(migrationSql, {
-          language: 'postgresql',
-          keywordCase: 'lower',
-          identifierCase: 'lower',
-          dataTypeCase: 'lower',
-          functionCase: 'lower',
-        })
-
-        const withSemicolon = formattedSql.endsWith(';') ? formattedSql : `${formattedSql};`
-
-        migrations.push(withSemicolon)
       }
-    }
     }
 
     return migrations
