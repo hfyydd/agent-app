@@ -1,3 +1,4 @@
+
 import { createClient } from "@/utils/supabase/client";
 import TagNav from "@/components/TagNav";
 import WorkflowList, { Workflow } from "@/components/WorkflowList";
@@ -12,6 +13,7 @@ export default async function Index() {
   const supabase = createClient();
   let featuredWorkflow: FeaturedWorkflow | null = null;
   let workflows: Workflow[] = [];
+
 
   try {
     const { data: featuredData, error: featuredError } = await supabase

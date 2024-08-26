@@ -54,7 +54,7 @@ export default function TagNav() {
     fetchTags();
   }, [currentSearch]);
 
-  const handleTagClick = (tagId: string) => {
+  const handleTagClick = (tagId: string | null) => {
     const newSearchParams = new URLSearchParams(searchParams);
     if (selectedTag === tagId) {
       setSelectedTag(null);
@@ -135,6 +135,10 @@ export default function TagNav() {
         >
           <Link
             href="/"
+            onClick={(e) => {
+              e.preventDefault();
+              handleTagClick(null);
+            }}
             className={`text-sm mr-4 px-3 py-1.5 rounded-full transition-colors duration-200
               ${!selectedTag
                 ? 'bg-blue-100 text-blue-600 font-medium'
