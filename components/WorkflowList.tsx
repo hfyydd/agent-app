@@ -38,6 +38,11 @@ export default function WorkflowList({ workflows }: WorkflowListProps) {
   const searchTerm = searchParams.get('search');
   const { user} = useUser(); // 获取用户信息
 
+  // useEffect(() => {
+  //   console.log(`tagId: ${tagId}`);
+  //   console.log(`workflows: ${workflows.length}`);
+  // }, [tagId]);
+
   
   const filteredAndSortedWorkflows = useMemo(() => {
     return workflows

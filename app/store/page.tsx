@@ -1,4 +1,4 @@
-
+"use client"
 import { createClient } from "@/utils/supabase/client";
 import TagNav from "@/components/TagNav";
 import WorkflowList, { Workflow } from "@/components/WorkflowList";
