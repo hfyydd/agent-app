@@ -223,10 +223,12 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
     e.stopPropagation(); // 阻止事件冒泡,防止触发卡片的点击事件
     const baseUrl = window.location.origin;
     const searchParam = encodeURIComponent(title);
-    const shareUrl = `${baseUrl}/marketplace?search=${searchParam}&id=${id}`;
+    const shareUrl = `${baseUrl}/store?search=${searchParam}`;
     
-    navigator.clipboard.writeText(shareUrl).then(() => {
-      alert('分享链接已复制到剪贴板');
+    const shareText = `我在 aihouse 发现了一个很棒的工作流：「${title}」\n\n快来看看吧：${shareUrl}`;
+    
+    navigator.clipboard.writeText(shareText).then(() => {
+      alert('分享内容已复制到剪贴板，可以直接粘贴到微信聊天框');
     }).catch(err => {
       console.error('复制失败:', err);
       alert('复制链接失败,请手动复制: ' + shareUrl);
