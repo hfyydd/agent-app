@@ -1,7 +1,7 @@
 "use client"
 import { useState, useEffect } from 'react';
 import { createClient } from "@/utils/supabase/client";
-import { FaDownload, FaTimes, FaEye } from 'react-icons/fa';
+import { FaDownload, FaTimes, FaEye, FaShare } from 'react-icons/fa';
 import { useUser } from '@/hooks/useUser';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
@@ -40,7 +40,7 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
   const supabase = createClient();
   const router = useRouter();
 
-  const [localViews, setLocalViews] = useState(views); // 本地保存的浏览次数
+  const [localViews, setLocalViews] = useState(views); // 本地保存的浏览次���
   const [localDownloads, setLocalDownloads] = useState(downloads); // 本地保存的浏次数
 
   useEffect(() => {
@@ -158,7 +158,7 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
 
   const handleNewPurchase = async () => {
     if (!price || price <= 0) {
-      // 如果工作流是免费的，直接下载
+      // 如果工作是免费的，直接下载
       const { data, error } = await supabase.rpc('purchase_workflow', {
         workflow_id: id,
         workflow_price: 0
@@ -219,7 +219,19 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
 
   };
 
-
+  const handleShare = (e: React.MouseEvent) => {
+    e.stopPropagation(); // 阻止事件冒泡,防止触发卡片的点击事件
+    const baseUrl = window.location.origin;
+    const searchParam = encodeURIComponent(title);
+    const shareUrl = `${baseUrl}/marketplace?search=${searchParam}&id=${id}`;
+    
+    navigator.clipboard.writeText(shareUrl).then(() => {
+      alert('分享链接已复制到剪贴板');
+    }).catch(err => {
+      console.error('复制失败:', err);
+      alert('复制链接失败,请手动复制: ' + shareUrl);
+    });
+  };
 
   return (
     <>
@@ -254,6 +266,9 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
           <span className="flex items-center cursor-pointer">
             <FaDownload className="mr-1" /> {localDownloads}
           </span>
+          <span className="flex items-center cursor-pointer" onClick={handleShare}>
+            <FaShare className="mr-1" /> 分享
+          </span>
         </div>
       </div>
 
@@ -281,6 +296,12 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
             </div>
             <div className="p-6 border-t dark:border-gray-700">
               <div className="flex justify-end space-x-4">
+                <button
+                  onClick={handleShare}
+                  className="bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-6 rounded transition duration-300 flex items-center text-base"
+                >
+                  <FaShare className="mr-2" /> 分享
+                </button>
                 <button
                   onClick={handleViewInChat}
                   className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded transition duration-300 flex items-center text-base"

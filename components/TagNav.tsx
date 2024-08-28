@@ -55,19 +55,21 @@ export default function TagNav() {
   }, [currentSearch]);
 
   const handleTagClick = (tagId: string | null) => {
-    const newSearchParams = new URLSearchParams(searchParams);
-    if (selectedTag === tagId) {
+    if (tagId === null) {
+      // 清空所有参数
+      router.replace('/');
       setSelectedTag(null);
-      newSearchParams.delete('tag');
     } else {
-      setSelectedTag(tagId);
-      if (tagId) {
-        newSearchParams.set('tag', tagId);
-      } else {
+      const newSearchParams = new URLSearchParams(searchParams);
+      if (selectedTag === tagId) {
+        setSelectedTag(null);
         newSearchParams.delete('tag');
+      } else {
+        setSelectedTag(tagId);
+        newSearchParams.set('tag', tagId);
       }
+      router.replace(`/?${newSearchParams.toString()}`);
     }
-    router.replace(`/?${newSearchParams.toString()}`);
   };
 
   const handleSearch = (e: React.FormEvent) => {
