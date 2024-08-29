@@ -56,11 +56,11 @@ export default function VideoPage() {
           </a>
         </div> */}
 
-        <h2 className="text-2xl font-semibold mb-6">视频教程</h2>
-        <div className="grid grid-cols-3 gap-8">
+        <h2 className="text-2xl font-semibold mb-6 dark:text-white">视频教程</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {videos.map((video) => (
-            <div key={video.id} className="bg-white rounded-lg shadow-md overflow-hidden w-full">
-              <h3 className="text-lg font-semibold p-4">{video.title}</h3>
+            <div key={video.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden w-full">
+              <h3 className="text-lg font-semibold p-4 dark:text-white">{video.title}</h3>
               <div className="aspect-w-16 aspect-h-9">
                 <div className="w-full h-0 pb-[56.25%] relative">
                   <div
