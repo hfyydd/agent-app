@@ -97,11 +97,18 @@ export default {
           '0%,70%,100%': { opacity: '1' },
           '20%,50%': { opacity: '0' },
         },
+        'float-large': {
+          '0%, 100%': { transform: 'translate(0, 0)' },
+          '25%': { transform: 'translate(50%, 50%)' },
+          '50%': { transform: 'translate(0%, 100%)' },
+          '75%': { transform: 'translate(-50%, 50%)' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         'caret-blink': 'caret-blink 1.25s ease-out infinite',
+        'float-large': 'float-large 30s ease-in-out infinite',
       },
       // @ts-expect-error
       typography: ({ theme }) => ({

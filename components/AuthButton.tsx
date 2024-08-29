@@ -14,7 +14,7 @@ export default async function AuthButton() {
     return (
       <div className="flex items-center gap-4">
         <div className="hidden md:flex items-center gap-4">
-          <span className="text-sm font-medium text-gray-700">欢迎, {user.email?.split('@')[0]}!</span>
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">欢迎, {user.email?.split('@')[0]}!</span>
           <Link
             href="/dashboard"
             className="py-2 px-4 rounded-full text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-200 shadow-sm flex items-center"

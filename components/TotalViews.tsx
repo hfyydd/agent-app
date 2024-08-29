@@ -36,7 +36,7 @@ export default function TotalViews() {
     }
 
     return (
-        <div className="text-sm text-gray-500">
+        <div className="text-sm text-gray-500 dark:text-gray-400">
             总浏览量: {totalViews !== null ? totalViews : '加载中...'}
         </div>
     );
