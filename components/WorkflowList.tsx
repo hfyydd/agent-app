@@ -36,19 +36,19 @@ export default function WorkflowList({ workflows }: WorkflowListProps) {
   const searchParams = useSearchParams();
   const tagId = searchParams.get('tag');
   const searchTerm = searchParams.get('search');
-  const { user} = useUser(); // 获取用户信息
+  const { user } = useUser(); // 获取用户信息
 
   // useEffect(() => {
   //   console.log(`tagId: ${tagId}`);
   //   console.log(`workflows: ${workflows.length}`);
   // }, [tagId]);
 
-  
+
   const filteredAndSortedWorkflows = useMemo(() => {
     return workflows
       .filter(workflow => {
         const matchesTag = !tagId || workflow.tags.includes(tagId);
-        const matchesSearch = !searchTerm || 
+        const matchesSearch = !searchTerm ||
           workflow.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
           workflow.description.toLowerCase().includes(searchTerm.toLowerCase());
         return matchesTag && matchesSearch;
@@ -149,7 +149,7 @@ export default function WorkflowList({ workflows }: WorkflowListProps) {
           <option value="downloads">下载量</option>
           <option value="views">浏览量</option>
           <option value="price">价格</option>
-          
+
         </select>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
