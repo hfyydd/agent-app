@@ -6,21 +6,7 @@ import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import ToolCard from "@/components/ToolCard";
 import { useUser } from "@/hooks/useUser";
 import { createClient } from "@/utils/supabase/client";
-
-export interface Workflow {
-  id: string;
-  name: string;
-  description: string;
-  views: number;
-  tags: string[];
-  content: string;
-  price?: number;
-  icon_url: string;
-  test_url: string;
-  downloads: number;
-  updated_at: string;
-  content_image_url: string;
-}
+import { Workflow } from "@/types";
 
 interface WorkflowListProps {
   workflows: Workflow[];

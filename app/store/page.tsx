@@ -1,14 +1,10 @@
 "use client"
 import { useState, useEffect } from 'react';
-import { createClient } from "@/utils/supabase/client";
 import TagNav from "@/components/TagNav";
-import WorkflowList, { Workflow } from "@/components/WorkflowList";
+import WorkflowList from "@/components/WorkflowList";
 import ReactMarkdown from "react-markdown";
-
-interface FeaturedWorkflow {
-  workflow_id: string;
-  workflows: Workflow;
-}
+import { fetchFeaturedWorkflow, fetchWorkflows } from "@/app/actions/storeActions";
+import { FeaturedWorkflow, Workflow } from "@/types";
 
 export default function Index() {
   const [featuredWorkflow, setFeaturedWorkflow] = useState<FeaturedWorkflow | null>(null);
@@ -17,44 +13,14 @@ export default function Index() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const supabase = createClient();
-
       try {
-        const { data: featuredData, error: featuredError } = await supabase
-          .from('featured_workflow')
-          .select(`
-            workflow_id,
-            workflows (
-              id,
-              name,
-              description
-            )
-          `)
-          .single<FeaturedWorkflow>();
-
-        if (featuredError) {
-          console.error('Error fetching featured workflow:', featuredError);
-        } else {
+        const featuredData = await fetchFeaturedWorkflow();
+        if (featuredData) {
           setFeaturedWorkflow(featuredData);
         }
 
-        const { data: workflowsData, error: workflowsError } = await supabase
-          .from('workflows')
-          .select(`
-            *,
-            downloads:purchases(count)
-          `)
-          .eq('approved', 'approved')
-          .order('created_at', { ascending: false });
-
-        if (workflowsError) {
-          console.error('Error fetching workflows:', workflowsError);
-        } else if (workflowsData) {
-          setWorkflows(workflowsData.map(workflow => ({
-            ...workflow,
-            downloads: workflow.downloads[0]?.count || 0
-          })));
-        }
+        const workflowsData = await fetchWorkflows();
+        setWorkflows(workflowsData);
       } catch (error) {
         console.error('Unexpected error:', error);
         setError('发生了意外错误。请稍后再试。');
