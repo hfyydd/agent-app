@@ -5,7 +5,9 @@ import NavBar from '@/components/NavBar';
 import { Providers } from '@/components/Providers'
 import DynamicBackground from "@/components/DynamicBackground";
 import { initializeAuthListener } from "@/store/userStore";
+import { useStore } from 'zustand'
 import { useEffect } from "react";
+import { useTagStore } from "@/store/tagStore";
 
 // export const metadata = {
 //   title: '考拉的交易市集',
@@ -20,10 +22,13 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const fetchTags = useStore(useTagStore, (state) => state.fetchTags);
+
   useEffect(() => {
+    fetchTags();
     const unsubscribe = initializeAuthListener();
     return () => unsubscribe();
-  }, []);
+  }, [fetchTags]);
   return (
     <html lang="en" className={GeistSans.className}>
       <body className="flex flex-col min-h-screen bg-background text-foreground">

@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import ReactMarkdown from 'react-markdown';
 import { User } from '@supabase/supabase-js';
+import { useStore } from 'zustand'
+import { useTagStore } from "@/store/tagStore";
 
 // 在文件顶部添加这个接口
 interface ExtendedUser extends User {
@@ -34,48 +36,23 @@ interface Tag {
 }
 
 export default function ToolCard({ id, title, description, tagIds, content, price, icon_url, views = 0, test_url, downloads = 0, content_image_url, user }: ToolCardProps) {
-  const [tags, setTags] = useState<Tag[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const supabase = createClient();
   const router = useRouter();
 
-  const [localViews, setLocalViews] = useState(views); // 本地保存的浏览次���
+  const [localViews, setLocalViews] = useState(views); // 本地保存的浏览次
   const [localDownloads, setLocalDownloads] = useState(downloads); // 本地保存的浏次数
+  const { tags, loading, fetchTags } = useStore(useTagStore, (state) => ({
+    tags: state.tags,
+    loading: state.loading,
+    fetchTags: state.fetchTags
+  }));
 
   useEffect(() => {
-    async function fetchTags() {
-      if (tagIds && tagIds.length > 0) {
-        const { data, error } = await supabase
-          .from('tags')
-          .select('id, name')
-          .in('id', tagIds);
-
-        if (error) {
-          console.error('Error fetching tags:', error);
-        } else if (data) {
-          setTags(data);
-        }
-      }
+    if (tags.length === 0 && !loading) {
+      fetchTags();
     }
-
-
-    // async function fetchFavorites() {
-    //   const { count, error } = await supabase
-    //     .from('purchases')
-    //     .select('*', { count: 'exact', head: true })
-    //     .eq('workflow_id', id);
-
-    //   if (error) {
-    //     //console.error('Error fetching favorites:', error);
-    //   } else {
-    //     setFavorites(count || 0);
-    //   }
-    // }
-
-    // fetchFavorites();
-
-    fetchTags();
-  }, [tagIds, user, supabase]);
+  }, [tags, loading, fetchTags]);
 
   const handleViewInChat = () => {
     if (test_url) {
@@ -86,13 +63,15 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
   };
 
   const renderTags = () => {
-    if (tags.length === 0) return null;
+    if (tags.length === 0 || tagIds.length === 0) return null;
 
-    return tags.map((tag) => (
-      <span key={tag.id} className="mr-2 text-xs text-blue-500">
-        #{tag.name}
-      </span>
-    ));
+    return tags
+      .filter(tag => tagIds.some(id => String(id).trim() === String(tag.id).trim()))
+      .map(tag => (
+        <span key={tag.id} className="mr-2 text-xs text-blue-500">
+          #{tag.name}
+        </span>
+      ));
   };
 
   const renderPrice = () => {
