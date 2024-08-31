@@ -1,13 +1,11 @@
-import { createClient } from "@/utils/supabase/server";
+'use client'
 import Link from "next/link";
 import LogoutButton from "./LogoutButton";
 import { useUser } from "@/hooks/useUser";
-export default async function AuthButton() {
-  const supabase = createClient();
+export default function AuthButton() {
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+
+  const { user, loading } = useUser();
 
   if (user) {
     return (
