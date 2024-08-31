@@ -1,24 +1,13 @@
 // app/layout.tsx
-import Sidebar from "@/components/Sidebar";
-import { createClient } from "@/utils/supabase/server";
-import { redirect } from "next/navigation";
-import Link from "next/link";
-import LogoutButton from "@/components/LogoutButton";
+import Sidebar from "@/components/Sidebar"; 
 
 export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = createClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
 
-  if (!user) {
-    return redirect("/login");
-  }
 
   // 检查当前路径，如果是根路径，则重定向到 BasicInfo
 

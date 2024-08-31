@@ -5,7 +5,6 @@ import { useSearchParams } from "next/navigation";
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import ToolCard from "@/components/ToolCard";
 import { useUser } from "@/hooks/useUser";
-import { createClient } from "@/utils/supabase/client";
 import { Workflow } from "@/types";
 
 interface WorkflowListProps {

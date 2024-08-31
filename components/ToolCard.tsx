@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react';
 import { createClient } from "@/utils/supabase/client";
 import { FaDownload, FaTimes, FaEye, FaShare } from 'react-icons/fa';
-//import { useUser } from '@/hooks/useUser';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import ReactMarkdown from 'react-markdown';

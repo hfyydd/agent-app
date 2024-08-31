@@ -2,13 +2,11 @@
 import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useUser } from '@/hooks/useUser';
 import { useAdmin } from '@/hooks/useAdmin';
 
 
 const Sidebar = () => {
   const pathname = usePathname();
-  //const { user } = useUser();
   const { isAdmin, loading } = useAdmin();
 
   const menuStructure = [
