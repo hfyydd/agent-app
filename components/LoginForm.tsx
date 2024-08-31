@@ -16,12 +16,25 @@ export default function LoginForm({ signIn, signUp, signInWithGitHub, signInWith
   const [passwordFocused, setPasswordFocused] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsLoading(true);
+    try {
+      await (isLogin ? signIn : signUp)(new FormData(event.currentTarget));
+    } catch (error) {
+      console.error('登录/注册失败', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900 min-w-[400px]">
       <div className="w-full max-w-[600px] bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg">
         <h2 className="text-3xl font-bold text-center mb-8 dark:text-white">{isLogin ? '欢迎回来' : '创建账户'}</h2>
-        <form className="space-y-6" action={isLogin ? signIn : signUp}>
+        <form className="space-y-6" onSubmit={handleSubmit}>
           <div className="relative">
             <input
               id="email"
@@ -71,9 +84,10 @@ export default function LoginForm({ signIn, signUp, signInWithGitHub, signInWith
           <div>
             <button
               type="submit"
-              className="w-full py-3 px-4 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+              disabled={isLoading}
+              className={`w-full py-3 px-4 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
-              继续
+              {isLoading ? '加载中...' : '继续'}
             </button>
           </div>
         </form>

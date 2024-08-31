@@ -94,6 +94,7 @@ export default function Login({
     "use server";
     
     const origin = headers().get("origin");
+    console.log("origin", origin);
     const supabase = createClient();
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'github',
