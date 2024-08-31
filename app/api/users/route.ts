@@ -84,21 +84,7 @@ export async function GET(req: NextRequest) {
 
 
   if (accountsError) {
-    if (accountsError.code === 'PGRST116') {
-      const { error: insertError } = await supabase
-      .from('accounts')
-      .insert({
-        user_id: user.id,
-        balance: 0,
-        cumulative_charge: 0,
-        gift_amount: 0,
-        total_consumption: 0,
-        yesterday_consumption: 0,
-        this_month_consumption: 0,
-      })
-    }else{
-      return NextResponse.json({ error: accountsError.message }, { status: 500 });
-    }
+    return NextResponse.json({ error: accountsError.message }, { status: 500 });
   }
 
   // 将用户信息和账户信息合并
