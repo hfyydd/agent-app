@@ -64,7 +64,10 @@ const nextConfig = {
     };
     return config;
   },
-  swcMinify: false
+  swcMinify: false,
+  experimental: {
+    missingSuspenseWithCSRBailout: false,
+  },
 };
 
 // Dynamically set the NEXT_PUBLIC_PGLITE_VERSION
