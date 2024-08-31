@@ -1,15 +1,18 @@
+'use client'
 import { GeistSans } from "geist/font/sans";
 import "./globals.css";
 import NavBar from '@/components/NavBar';
 import { Providers } from '@/components/Providers'
 import DynamicBackground from "@/components/DynamicBackground";
+import { initializeAuthListener } from "@/store/userStore";
+import { useEffect } from "react";
 
-export const metadata = {
-  title: '考拉的交易市集',
-  icons: {
-    icon: '/favicon.ico',
-  },
-}
+// export const metadata = {
+//   title: '考拉的交易市集',
+//   icons: {
+//     icon: '/favicon.ico',
+//   },
+// }
 
 
 export default function RootLayout({
@@ -17,7 +20,10 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-
+  useEffect(() => {
+    const unsubscribe = initializeAuthListener();
+    return () => unsubscribe();
+  }, []);
   return (
     <html lang="en" className={GeistSans.className}>
       <body className="flex flex-col min-h-screen bg-background text-foreground">

@@ -1,11 +1,19 @@
 'use client'
 import Link from "next/link";
 import LogoutButton from "./LogoutButton";
-import { useUser } from "@/hooks/useUser";
+import { useEffect, useCallback } from "react";
+import { useUserStore } from "@/store/userStore";
+import { useStore } from 'zustand'
+
 export default function AuthButton() {
-
-
-  const { user, loading } = useUser();
+  const { user, loading, fetchUser } = useStore(useUserStore, (state) => ({
+    user: state.user,
+    loading: state.loading,
+    fetchUser: state.fetchUser
+  }));
+  useEffect(() => {
+    fetchUser();
+  }, [fetchUser]);
 
   if (user) {
     return (

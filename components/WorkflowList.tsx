@@ -4,7 +4,8 @@
 import { useSearchParams } from "next/navigation";
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import ToolCard from "@/components/ToolCard";
-import { useUser } from "@/hooks/useUser";
+import { useUserStore } from "@/store/userStore";
+import { useStore } from 'zustand'
 import { Workflow } from "@/types";
 
 interface WorkflowListProps {
@@ -21,7 +22,14 @@ export default function WorkflowList({ workflows }: WorkflowListProps) {
   const searchParams = useSearchParams();
   const tagId = searchParams.get('tag');
   const searchTerm = searchParams.get('search');
-  const { user } = useUser(); // 获取用户信息
+  const { user, loading, fetchUser } = useStore(useUserStore, (state) => ({
+    user: state.user,
+    loading: state.loading,
+    fetchUser: state.fetchUser
+  }));
+  useEffect(() => {
+    fetchUser();
+  }, [fetchUser]); // 获取用户信息
 
   // useEffect(() => {
   //   console.log(`tagId: ${tagId}`);

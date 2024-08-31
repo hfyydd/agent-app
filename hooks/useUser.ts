@@ -12,6 +12,10 @@ export function useUser() {
   const supabase = createClient();
 
   useEffect(() => {
+    console.log('use user', user);
+  }, [user]);
+
+  useEffect(() => {
     async function getUser() {
       try {
         const { data: { user }, error: userError } = await supabase.auth.getUser();
@@ -35,7 +39,7 @@ export function useUser() {
           setUser(null);
         }
       } catch (error) {
-        console.error('获取用户信息失败:', error);
+        //console.error('获取用户信息失败:', error);
       } finally {
         setLoading(false);
       }

@@ -2,6 +2,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
+import { useUserStore } from '@/store/userStore';
 
 export async function signIn(formData: FormData) {
   const email = formData.get("email") as string;
@@ -16,6 +17,10 @@ export async function signIn(formData: FormData) {
   if (error) {
     return redirect("/login?message=Could not authenticate user");
   }
+
+  // 登录成功后，更新用户状态
+  const { fetchUser } = useUserStore.getState();
+  await fetchUser();
 
   return redirect("/");
 }
@@ -76,6 +81,10 @@ export async function signUp(formData: FormData) {
     // For now, we'll just log the errors and continue
   }
   }
+
+  // 注册成功后，更新用户状态
+  const { fetchUser } = useUserStore.getState();
+  await fetchUser();
 
   return redirect("/login?message=Check email to continue sign in process");
 }
@@ -143,5 +152,10 @@ export async function signInWithGoogle() {
 export async function signOut() {
   const supabase = createClient();
   await supabase.auth.signOut();
+
+  // 登出后，更新用户状态
+  const { fetchUser } = useUserStore.getState();
+  await fetchUser();
+
   return redirect("/login");
 }

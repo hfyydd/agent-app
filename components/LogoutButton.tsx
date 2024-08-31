@@ -1,12 +1,19 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useStore } from 'zustand';
+import { useUserStore } from "@/store/userStore";
 import { signOut } from "@/app/actions/auth";
 
 export default function LogoutButton() {
   const [showConfirm, setShowConfirm] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [logoutSuccess, setLogoutSuccess] = useState(false);
+
+  const { user, fetchUser } = useStore(useUserStore, (state) => ({
+    user: state.user,
+    fetchUser: state.fetchUser
+  }));
 
   const handleLogoutClick = () => {
     setShowConfirm(true);
@@ -17,6 +24,8 @@ export default function LogoutButton() {
     try {
       await signOut();
       setLogoutSuccess(true);
+      // 登出后更新用户状态
+      await fetchUser();
     } catch (error) {
       console.error('登出失败:', error);
     } finally {
@@ -28,6 +37,11 @@ export default function LogoutButton() {
     setShowConfirm(false);
     setLogoutSuccess(false);
   };
+
+  // 如果没有用户登录，不显示登出按钮
+  if (!user) {
+    return null;
+  }
 
   return (
     <>
