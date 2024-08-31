@@ -8,7 +8,7 @@ import { useAdmin } from '@/hooks/useAdmin';
 
 const Sidebar = () => {
   const pathname = usePathname();
-  const { user } = useUser();
+  //const { user } = useUser();
   const { isAdmin, loading } = useAdmin();
 
   const menuStructure = [

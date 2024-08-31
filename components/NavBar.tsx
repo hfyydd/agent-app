@@ -36,7 +36,7 @@ export default function NavBar() {
         </div>
         <MobileMenu navItems={navItems}>
           <div className="flex items-center justify-between">
-            <TotalViews />
+            {/* <TotalViews /> */}
             <ThemeToggle /> {/* Added ThemeToggle component */}
             <AuthButton />
           </div>
