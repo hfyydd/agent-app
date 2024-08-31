@@ -22,12 +22,12 @@ export default async function BasicInfoPage() {
           </label>
           <p className="text-gray-900 dark:text-gray-100" id="email">{user.email}</p>
         </div>
-        <div className="mb-4">
+        {/* <div className="mb-4">
           <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="userId">
             用户 ID
           </label>
           <p className="text-gray-900 dark:text-gray-100" id="userId">{user.id}</p>
-        </div>
+        </div> */}
         <div className="mb-4">
           <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="phone">
             手机号
