@@ -92,14 +92,20 @@ export default function Login({
 
   const signInWithGitHub = async () => {
     "use server";
-    
+  
     const origin = headers().get("origin");
     console.log("origin", origin);
     const supabase = createClient();
+  
+    // 检查是否为本地开发环境
+    const redirectTo = origin?.includes('localhost') 
+      ? 'http://localhost:3000/auth/callback'
+      : `${origin}/auth/callback`;
+
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'github',
       options: {
-        redirectTo: `${origin}/auth/callback`,
+        redirectTo,
       },
     });
   

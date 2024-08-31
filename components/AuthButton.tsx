@@ -1,38 +1,14 @@
-'use client';
-
-import { createClient } from "@/utils/supabase/client";
+import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 import LogoutButton from "./LogoutButton";
-import { useEffect, useState } from "react";
-import { User } from '@supabase/supabase-js';
+import { useEffect } from "react";
 
-export default function AuthButton() {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+export default async function AuthButton() {
   const supabase = createClient();
 
-  useEffect(() => {
-    async function getUser() {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
-      setLoading(false);
-    }
-
-    getUser();
-
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
-
-    return () => {
-      authListener.subscription.unsubscribe();
-    };
-  }, [supabase.auth]);
-
-  if (loading) {
-    return <div>加载中...</div>;
-  }
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (user) {
     return (
