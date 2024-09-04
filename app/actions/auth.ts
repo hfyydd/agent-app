@@ -43,44 +43,44 @@ export async function signUp(formData: FormData) {
     return redirect("/login?message=Could not authenticate user");
   }
 
-  if (authData.user) {
-    const { error: insertError } = await supabase
-      .from('accounts')
-      .insert({
-        user_id: authData.user.id,
-        balance: 0,
-        cumulative_charge: 0,
-        gift_amount: 0,
-        total_consumption: 0,
-        yesterday_consumption: 0,
-        this_month_consumption: 0,
-      });
+  // if (authData.user) {
+  //   const { error: insertError } = await supabase
+  //     .from('accounts')
+  //     .insert({
+  //       user_id: authData.user.id,
+  //       balance: 0,
+  //       cumulative_charge: 0,
+  //       gift_amount: 0,
+  //       total_consumption: 0,
+  //       yesterday_consumption: 0,
+  //       this_month_consumption: 0,
+  //     });
 
-    if (insertError) {
-      console.error("Error inserting account record:", insertError);
-      // You might want to handle this error, perhaps by deleting the auth user or notifying an admin
-    }
-    const { error: profilesError } = await supabase
-    .from('profiles')
-    .insert({
-      id: authData.user.id,
-      email: authData.user.email,
-      // Add any other fields you want to initialize
-      // For example:
-      // full_name: '',
-      // avatar_url: '',
-      // etc.
-    });
+  //   if (insertError) {
+  //     console.error("Error inserting account record:", insertError);
+  //     // You might want to handle this error, perhaps by deleting the auth user or notifying an admin
+  //   }
+  //   const { error: profilesError } = await supabase
+  //   .from('profiles')
+  //   .insert({
+  //     id: authData.user.id,
+  //     email: authData.user.email,
+  //     // Add any other fields you want to initialize
+  //     // For example:
+  //     // full_name: '',
+  //     // avatar_url: '',
+  //     // etc.
+  //   });
 
-  if (profilesError) {
-    console.error("Error inserting profile record:", profilesError);
-  }
+  // if (profilesError) {
+  //   console.error("Error inserting profile record:", profilesError);
+  // }
 
-  if (insertError || profilesError) {
-    // You might want to handle these errors, perhaps by deleting the auth user or notifying an admin
-    // For now, we'll just log the errors and continue
-  }
-  }
+  // if (insertError || profilesError) {
+  //   // You might want to handle these errors, perhaps by deleting the auth user or notifying an admin
+  //   // For now, we'll just log the errors and continue
+  // }
+  // }
 
   // 注册成功后，更新用户状态
   const { fetchUser } = useUserStore.getState();
