@@ -11,6 +11,6 @@ export interface NavItem {
     { href: '/education', label: '教育', enabled: true },
     { href: '/dbchat', label: ' 对话数据', enabled: true},
     { href: '/bvideos', label: 'B 站视频', enabled: true },
-    { href: '/efficiency', label: '效率工具', enabled: false},
+    { href: '/efficiency', label: '效率工具', enabled: true},
     
   ];
