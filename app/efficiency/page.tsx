@@ -13,14 +13,14 @@ const tools: Tool[] = [
   {
     id: '1',
     name: 'E2MUI',
-    description: '强大的AI对话模型,可用于各种自然语言处理任务。',
+    description: '强大的文本解析工具,可用于各种文本解析处理任务。',
     url: '/e2mui',
     icon_url: '/images/e2mui.png',
   },
   {
     id: '2',
     name: 'Dify Helper',
-    description: 'AI图像生成工具,可根据文字描述创作高质量图片。',
+    description: '将浏览的内容同步到您的 Dify 知识库中。',
     url: 'https://difyhelper.opacity.ink',
     icon_url: '/images/dify.png',
   },
