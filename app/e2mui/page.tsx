@@ -84,6 +84,27 @@ const PricingPage: React.FC = () => {
         </p>
       </div>
 
+      <div className="mt-16">
+        <h2 className="text-2xl font-semibold mb-8 text-center">常见问题</h2>
+        {/* 这里可以添加FAQ内容 */}
+      </div>
+
+      <footer className="mt-16 pt-8 border-t border-gray-200">
+        <div className="text-center text-sm text-gray-500">
+          <p>选择订阅即表示您同意我们的服务条款和隐私政策。</p>
+          <div className="mt-4 space-x-4">
+            <Link href="/terms" className="text-blue-500 hover:underline">
+              服务条款
+            </Link>
+            <Link href="/privacy" className="text-blue-500 hover:underline">
+              隐私声明
+            </Link>
+            <Link href="/refund" className="text-blue-500 hover:underline">
+              退款政策
+            </Link>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
