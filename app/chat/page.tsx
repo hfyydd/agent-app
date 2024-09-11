@@ -1,9 +1,16 @@
 // app/chat/page.tsx
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
-import LogoutButton from "@/components/LogoutButton";
 import ChatContent from "@/components/ChatContent";
-import Link from "next/link";
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: '聊天页面',
+  description: '这是聊天页面',
+  httpEquiv: {
+    'Content-Security-Policy': 'upgrade-insecure-requests'
+  }
+};
 
 export default async function ChatPage() {
   const supabase = createClient();
