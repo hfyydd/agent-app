@@ -7,10 +7,13 @@ import { Metadata } from 'next';
 export const metadata: Metadata = {
   title: '聊天页面',
   description: '这是聊天页面',
-  httpEquiv: {
-    'Content-Security-Policy': 'upgrade-insecure-requests'
-  }
+  openGraph: {
+    title: '聊天页面',
+    description: '这是聊天页面',
+  },
 };
+
+export const dynamic = 'force-dynamic';
 
 export default async function ChatPage() {
   const supabase = createClient();
