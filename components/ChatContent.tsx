@@ -20,6 +20,7 @@ export default function ChatContent() {
   const [error, setError] = useState<string | null>(null);
   const [countdown, setCountdown] = useState(5);
   const [showHttpWarning, setShowHttpWarning] = useState(false);
+  const [redirectToHome, setRedirectToHome] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -69,8 +70,20 @@ export default function ChatContent() {
     setShowHttpWarning(false);
     if (workflow?.test_url) {
       window.open(workflow.test_url, '_blank', 'noopener,noreferrer');
+      // 设置重定向标志
+      setRedirectToHome(true);
     }
   };
+
+  useEffect(() => {
+    if (redirectToHome) {
+      // 使用 setTimeout 来确保新窗口已经打开
+      const timer = setTimeout(() => {
+        router.push('/');
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [redirectToHome, router]);
 
   if (isLoading) {
     return <div className="flex justify-center items-center h-screen">Loading...</div>;
