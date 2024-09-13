@@ -105,12 +105,15 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
     }
 
     try {
+      // 首先查询 purchase 表
       const { data: purchaseData, error: purchaseError } = await supabase
         .from('purchases')
         .select('*')
         .eq('user_id', user.id)
         .eq('workflow_id', id)
         .single();
+      console.log("purchaseData",purchaseData)
+      console.log("purchaseError",purchaseError)
 
       if (purchaseError) {
         if (purchaseError.code === 'PGRST116') {
@@ -136,22 +139,31 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
 
   const handleNewPurchase = async () => {
     if (!price || price <= 0) {
-      // 如果工作是免费的，直接下载
-      const { data, error } = await supabase.rpc('purchase_workflow', {
-        workflow_id: id,
-        workflow_price: 0
-      });
-      if (error) {
-        console.error('Purchase failed:', error);
-        alert('下载失败，请重试');
-      } else {
-        downloadWorkflow();
-        setLocalDownloads(prevDownloads => prevDownloads + 1);
+      // 如果工作流是免费的，直接下载
+      try {
+        const { data, error } = await supabase.rpc('purchase_workflow', {
+          workflow_id: id,
+          workflow_price: 0
+        });
+        console.log(data)
+        console.log(error)
+        if (error) {
+          console.error('购买失败:', error);
+          alert('下载失败，请重试');
+        } else {
+          downloadWorkflow();
+          setLocalDownloads(prevDownloads => prevDownloads + 1);
+        }
+      } catch (e) {
+        console.error('发生意外错误:', e);
+        alert('下载过程中发生错误，请重试');
       }
       return;
     }
+    console.log("price",price)
+    console.log("user?.balance",user?.balance)
   
-    if (user?.balance && user.balance < price) {
+    if (user?.balance === undefined || user.balance < price) {
       alert('余额不足，请前往充值页面充值');
       router.push('/dashboard/recharge');
       return;
@@ -165,6 +177,7 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
         workflow_id: id,
         workflow_price: price
       });
+      console.log(data)
       if (error) {
         console.error('Purchase failed:', error);
         alert('购买失败，请重试');
