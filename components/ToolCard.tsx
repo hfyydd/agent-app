@@ -112,8 +112,7 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
         .eq('user_id', user.id)
         .eq('workflow_id', id)
         .single();
-      console.log("purchaseData",purchaseData)
-      console.log("purchaseError",purchaseError)
+
 
       if (purchaseError) {
         if (purchaseError.code === 'PGRST116') {
@@ -160,8 +159,6 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
       }
       return;
     }
-    console.log("price",price)
-    console.log("user?.balance",user?.balance)
   
     if (user?.balance === undefined || user.balance < price) {
       alert('余额不足，请前往充值页面充值');
