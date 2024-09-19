@@ -109,3 +109,13 @@ export interface FeaturedWorkflow {
     };
   }
 
+  export interface AifadianOrderResponse {
+    ec: number;
+    em: string;
+    data: {
+      list: Order[];
+      total_count: number;
+      total_page: number;
+    };
+  }
+
