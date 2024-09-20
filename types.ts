@@ -119,3 +119,58 @@ export interface FeaturedWorkflow {
     };
   }
 
+
+///////////
+
+
+
+//蓝兔支付
+//生成二维码接口返回实体类
+export interface LTWxQRCodeResponse {
+  code: number;
+  data: {
+    code_url: string;
+    QRcode_url: string;
+  };
+  msg: string;
+  request_id: string;
+}
+
+//查询订单返回实体类
+export interface LTQueryOrderResponse {
+  code: number;
+  data: {
+    add_time: string;
+    mch_id: string;
+    order_no: string;
+    out_trade_no: string;
+    pay_no?: string;
+    body: string;
+    total_fee: string;
+    trade_type: string;
+    success_time?: string;
+    attach: string;
+    openid?: string;
+    pay_status: number;
+    code_url: string; // 这个字段在图片中没有显示,但根据您的代码中使用情况,我们需要添加它
+  };
+  msg: string;
+  request_id: string;
+}
+
+//支付回调参数实体类
+export interface LTPaymentCallback {
+  code: string;
+  timestamp: string;
+  mch_id: string;
+  order_no: string;
+  out_trade_no: string;
+  pay_no: string;
+  total_fee: string;
+  sign: string;
+  pay_channel?: string;
+  trade_type?: string;
+  success_time?: string;
+  attach?: string;
+  openid?: string;
+}

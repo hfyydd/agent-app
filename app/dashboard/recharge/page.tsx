@@ -1,9 +1,124 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { LTWxQRCodeResponse, LTQueryOrderResponse } from '@/types';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function RechargePage() {
+  useEffect(() => {
+    //生成充值平台订单号
+    const orderNumber = generateOrderNumber();
+
+    // 请求接口，展示支付二维码
+    const fetchQRCode = async () => {
+      try {
+        const response = await fetch('https://api.ltzf.cn/api/wxpay/native', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            mch_id: '1630848488',
+            out_trade_no: orderNumber, // 生成订单号
+            total_fee: 20, // 金额
+            body: '平台用户充值', // 商品描述
+            timeStamp: Math.floor(Date.now() / 1000), // 获取秒级时间戳
+            notify_url: 'todo', // 支付回调地址
+            attach: '{"product_type":0}', // 支付的产品类型，0是充值，1是e2m app，其他未定
+          }),
+        });
+        if (!response.ok) {
+          //生成二维码失败
+          //TODO 整个页面直接不显示
+          return;
+        }
+
+        const data: LTWxQRCodeResponse = await response.json();
+
+        if (data.code !== 0) {
+          //生成二维码失败
+          //TODO 整个页面直接不显示
+          return;
+        }
+
+        const qrcodeString = data.data.code_url;
+
+        //TODO使用qrcodeString展示二维码
+        
+        //在订单表中插入一条记录，状态是初始状态，未支付，产品类型是平台充值 TODO
+        //获取用户id
+        // INSERT INTO orders (
+        //   order_number, 
+        //   user_id, 
+        //   order_type, 
+        //   amount, 
+        //   payment_status, 
+        //   processing_status
+        // ) VALUES (
+        //   'ORD-20240920-001',  -- 订单号
+        //   1001,                -- 用户ID
+        //   0,                   -- 订单类型 (1 表示 e2m app订阅)
+        //   99,               -- 订单金额
+        //   0,                   -- 支付状态 (0 表示未支付)
+        //   0                    -- 处理状态 (0 表示初始状态)
+        // );
+        
+      // 开启定时器检查支付状态
+      const checkPaymentStatus = setInterval(async () => {
+        
+          const response = await fetch('https://api.ltzf.cn/api/wxpay/get_pay_order', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              mch_id: '1630848488',
+              out_trade_no: orderNumber, // 生成订单号
+              timeStamp: Math.floor(Date.now() / 1000), // 获取秒级时间戳
+              sign: 'xxxx',
+            }),
+          });
+
+          if (!response.ok) {
+            console.error('检查支付状态失败');
+            return;
+          }
+
+          const result: LTQueryOrderResponse = await response.json();
+
+          if (result.code == 0) {
+            if (result.data.pay_status == 1) {
+              //停止定时器
+              clearInterval(checkPaymentStatus);
+              console.log('支付成功');
+              // TODO: 更新用户界面，显示支付成功信息
+            }
+  
+          }
+    
+      }, 3000);
+
+      // 组件卸载时清除定时器
+      return () => {
+        console.log('清除支付状态检查定时器');
+        clearInterval(checkPaymentStatus);
+      };
+  
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchQRCode();
+  }, []);
+
+  // 生成充值订单号的函数
+  const generateOrderNumber = () => {
+    const uuid = uuidv4();
+    return `CZ${uuid.replace(/-/g, '')}`;
+  };
+
   const handleRecharge = () => {
     window.location.href = 'https://ifdian.net/order/create?plan_id=07231514759b11ef83a95254001e7c00&product_type=0&remark=';
   };

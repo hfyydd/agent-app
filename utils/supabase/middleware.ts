@@ -44,7 +44,7 @@ export const updateSession = async (request: NextRequest) => {
     const { data:{user}, error } = await supabase.auth.getUser();
 
     // All API routes require authentication
-    if (!user && request.nextUrl.pathname.startsWith('/api') && !request.nextUrl.pathname.startsWith('/api/aifadian/webhook') && !request.nextUrl.pathname.startsWith('/api/aifadian/order') && !request.nextUrl.pathname.startsWith('/api/aifadian/sponsor')) {
+    if (!user && request.nextUrl.pathname.startsWith('/api') && !request.nextUrl.pathname.startsWith('/api/lantu/webhook')) {
       return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 403 })
     }
 
