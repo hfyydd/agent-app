@@ -4,14 +4,19 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { LTWxQRCodeResponse, LTQueryOrderResponse } from '@/types';
 import { v4 as uuidv4 } from 'uuid';
+import { createClient } from '@/utils/supabase/client';
+import { QRCodeSVG } from 'qrcode.react';
 
 export default function RechargePage() {
+  const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null);
+
   useEffect(() => {
     //生成充值平台订单号
     const orderNumber = generateOrderNumber();
 
     // 请求接口，展示支付二维码
     const fetchQRCode = async () => {
+      const supabase = createClient();
       try {
         const response = await fetch('https://api.ltzf.cn/api/wxpay/native', {
           method: 'POST',
@@ -43,6 +48,29 @@ export default function RechargePage() {
         }
 
         const qrcodeString = data.data.code_url;
+        setQrCodeUrl(qrcodeString);
+
+        // 插入订单记录
+        const { data: user, error: userError } = await supabase.auth.getUser();
+        if (userError) {
+          console.error('获取用户信息失败:', userError);
+          return;
+        }
+
+        const { error: insertError } = await supabase
+          .from('orders')
+          .insert({
+            order_number: orderNumber,
+            user_id: user.user.id,
+            order_type: 0,
+            amount: 20,
+            payment_status: 0,
+            processing_status: 0
+          });
+
+        if (insertError) {
+          console.error('插入订单记录失败:', insertError);
+        }
 
         //TODO使用qrcodeString展示二维码
         
@@ -159,6 +187,14 @@ export default function RechargePage() {
           <li><strong>微信号：koalababy2024</strong></li>
         </ul>
       </div>
+
+      {qrCodeUrl && (
+        <div className="mt-6 text-center">
+          <h2 className="text-xl font-bold mb-2 dark:text-white">扫描二维码支付</h2>
+          <QRCodeSVG value={qrCodeUrl} size={200} />
+        </div>
+      )}
+
     </div>
   );
 }

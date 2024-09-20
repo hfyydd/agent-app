@@ -158,6 +158,9 @@ importers:
       postcss:
         specifier: 8.4.33
         version: 8.4.33
+      qrcode.react:
+        specifier: ^4.0.1
+        version: 4.0.1(react@18.2.0)
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -213,7 +216,7 @@ importers:
         specifier: 5.3.3
         version: 5.3.3
       uuid:
-        specifier: ^9.0.0
+        specifier: ^9.0.1
         version: 9.0.1
       zod:
         specifier: ^3.23.8
@@ -3073,6 +3076,11 @@ packages:
   punycode@2.3.1:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
+
+  qrcode.react@4.0.1:
+    resolution: {integrity: sha512-Lpj0tPBn561WiQ3QQWXbkx8xTtB8BZkJeMZWLJIL8iaPBCoWzW1IpCeU3gY5MDqsb0+efCvEGkl9O0naP64crA==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
 
   queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
@@ -7174,6 +7182,10 @@ snapshots:
       once: 1.4.0
 
   punycode@2.3.1: {}
+
+  qrcode.react@4.0.1(react@18.2.0):
+    dependencies:
+      react: 18.2.0
 
   queue-microtask@1.2.3: {}
 
