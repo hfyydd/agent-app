@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { LTPaymentCallback } from '@/types'
 import { createClient } from '@/utils/supabase/client';
 import { Mutex } from 'async-mutex';
+import { wxPaySign } from '@/lib/utils/ltpaysign';
 
 const mutex = new Mutex();
 
@@ -11,6 +12,22 @@ export async function POST(request: Request) {
             const payResult: LTPaymentCallback = await request.json()
 
             console.log('收到蓝兔支付回调:', payResult)
+
+            //签名检验
+            const sign = wxPaySign({
+                code: payResult.code,
+                timestamp: payResult.timestamp,
+                mch_id: payResult.mch_id,
+                order_no: payResult.order_no,
+                out_trade_no: payResult.out_trade_no,
+                pay_no: payResult.pay_no,
+                total_fee: payResult.total_fee
+            }, '秘钥key TODO');
+
+            if (sign !== payResult.sign) {
+                console.error('签名验证失败');
+                throw new Error('签名验证失败');
+            }
 
             //获取订单号
             const orderId = payResult.out_trade_no;

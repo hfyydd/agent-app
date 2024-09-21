@@ -6,6 +6,9 @@ import { LTWxQRCodeResponse, LTQueryOrderResponse } from '@/types';
 import { v4 as uuidv4 } from 'uuid';
 import { createClient } from '@/utils/supabase/client';
 import { QRCodeSVG } from 'qrcode.react';
+import { sign } from 'crypto';
+import { m } from 'framer-motion';
+import { wxPaySign } from '@/lib/utils/ltpaysign';
 
 export default function RechargePage() {
   const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null);
@@ -19,21 +22,38 @@ export default function RechargePage() {
 
   const fetchQRCode = async () => {
     setIsLoading(true);
-    const orderNumber = generateOrderNumber();
     const supabase = createClient();
     try {
+      const mch_id = '1630848488';  //商户号
+      const orderNumber = generateOrderNumber(); //订单号
+      const total_fee = '20'; // 充值金额
+      const body = '平台用户充值'; // 订单描述
+      const timeStamp = Math.floor(Date.now() / 1000).toString(); // 时间戳
+      const notify_url = 'todo'; // 回调地址
+
+      //生成签名
+      const sign = wxPaySign({
+        mch_id: mch_id,
+        out_trade_no: orderNumber,
+        total_fee: total_fee,
+        body: body,
+        timeStamp: timeStamp,
+        notify_url: notify_url
+      }, '秘钥key TODO');
+
       const response = await fetch('https://api.ltzf.cn/api/wxpay/native', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          mch_id: '1630848488',
+          mch_id: mch_id,
           out_trade_no: orderNumber,
-          total_fee: 20,
-          body: '平台用户充值',
-          timeStamp: Math.floor(Date.now() / 1000),
-          notify_url: 'todo',
+          total_fee: total_fee,
+          body: body,
+          timeStamp: timeStamp,
+          notify_url: notify_url,
+          sign: sign,
           attach: '{"product_type":0}',
         }),
       });
@@ -75,7 +95,46 @@ export default function RechargePage() {
 
       // 开启定时器检查支付状态
       const checkPaymentStatus = setInterval(async () => {
-        // ... 现有的支付状态检查逻辑 ...
+        //查询订单
+        const timeStamp = Math.floor(Date.now() / 1000).toString(); // 时间戳
+
+        //生成签名
+        const sign = wxPaySign({
+          mch_id: mch_id,
+          out_trade_no: orderNumber,
+          timeStamp: timeStamp
+        }, '秘钥key TODO');
+
+        const response = await fetch('https://api.ltzf.cn/api/wxpay/get_pay_order', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            mch_id: mch_id,
+            out_trade_no: orderNumber, // 生成订单号
+            timeStamp: timeStamp, // 获取秒级时间戳
+            sign: sign,
+          }),
+        });
+
+        if (!response.ok) {
+          console.error('检查支付状态失败');
+          return;
+        }
+
+        const result: LTQueryOrderResponse = await response.json();
+
+        if (result.code == 0) {
+          if (result.data.pay_status == 1) {
+            //停止定时器
+            clearInterval(checkPaymentStatus);
+            console.log('支付成功');
+            // TODO: 更新用户界面，显示支付成功信息
+          }
+
+        }
+
       }, 3000);
 
       // 组件卸载时清除定时器
@@ -98,7 +157,7 @@ export default function RechargePage() {
   return (
     <div className="p-4 max-w-2xl mx-auto">
       <h1 className="text-2xl font-bold mb-4 dark:text-white">账户充值</h1>
-      
+
       <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-md mb-6">
         <p className="mb-2 dark:text-gray-300">尊敬的用户，我们现在使用爱发电平台进行充值。</p>
         <p className="mb-2 dark:text-gray-300">充值步骤：</p>
