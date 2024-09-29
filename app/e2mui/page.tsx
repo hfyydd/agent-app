@@ -12,6 +12,7 @@ const PricingPage: React.FC = () => {
   const router = useRouter();
   const { user } = useStore(useUserStore, (state) => ({ user: state.user }));
   const [userToken, setUserToken] = useState<string | null>(null);
+  const [refreshToken, setRefreshToken] = useState<string | null>(null);
   const supabase = createClient();
 
   useEffect(() => {
@@ -19,6 +20,8 @@ const PricingPage: React.FC = () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
         setUserToken(session.access_token);
+        setRefreshToken(session.refresh_token);
+        console.log('刷新令牌:', session.refresh_token);
       }
     };
 
@@ -30,9 +33,12 @@ const PricingPage: React.FC = () => {
   };
 
   const openE2MUIApp = () => {
-    if (user && userToken) {
+    console.log('打开应用时的刷新令牌:', refreshToken);
+    if (user && userToken && refreshToken) {
       // 用户已登录，打开应用
-      window.location.href = `e2mui://open?token=${userToken}`;
+      const appUrl = `e2mui://open?token=${encodeURIComponent(userToken)}&refreshToken=${encodeURIComponent(refreshToken)}`;
+      console.log('应用 URL:', appUrl);
+      window.location.href = appUrl;
     } else {
       // 用户未登录，跳转到登录页面
       router.push('/login');
@@ -106,10 +112,10 @@ const PricingPage: React.FC = () => {
 
       <div className="mt-8 text-center">
         <div className="inline-block bg-gray-200 text-gray-700 px-8 py-3 rounded-md">
-          {selectedPlan === 'free' ? '免费版即将推出' : `${selectedPlan === 'monthly' ? '���度' : '年度'}订阅即将开放`}
+          {selectedPlan === 'free' ? '免费版即将推出' : `${selectedPlan === 'monthly' ? '度' : '年度'}订阅即将开放`}
         </div>
         <p className="mt-4 text-sm text-gray-600">
-          我们正在努力完善这项功能,敬请期待!
+          我们正在努力完善这项功能,请期待!
         </p>
         <button
           onClick={openE2MUIApp}

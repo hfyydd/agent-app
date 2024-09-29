@@ -82,6 +82,11 @@ export default function ToolsPage() {
             找自己
           </a>
         </p>
+        <p className="mt-4">
+            <a href="https://beian.miit.gov.cn" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:underline">
+              苏ICP备2024131857号-1
+            </a>
+          </p>
       </footer>
     </>
   );
