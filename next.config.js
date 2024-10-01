@@ -23,7 +23,7 @@ async function getPackageVersion(module) {
 }
 const nextConfig = {
   images: {
-    domains: ['mfyamxpbtxomfcputjzs.supabase.co']
+    domains: ['mfyamxpbtxomfcputjzs.supabase.co', 'api.ltzf.cn']
   },
   async redirects() {
     return [
@@ -49,7 +49,7 @@ const nextConfig = {
         source: '/dashboard/admin/:path*',
         destination: '/dashboard/admin/:path*'
       },
-      // 添加以下规则以确保 /api 路由正常工作
+      // 确保这个规则在最后
       {
         source: '/api/:path*',
         destination: '/api/:path*',
@@ -62,9 +62,9 @@ const nextConfig = {
         source: '/api/:path*',
         headers: [
           { key: 'Access-Control-Allow-Credentials', value: 'true' },
-          { key: 'Access-Control-Allow-Origin', value: '*' },
-          { key: 'Access-Control-Allow-Methods', value: 'GET,DELETE,PATCH,POST,PUT' },
-          { key: 'Access-Control-Allow-Headers', value: 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version' },
+          { key: 'Access-Control-Allow-Origin', value: '*' }, // 允许所有来源
+          { key: 'Access-Control-Allow-Methods', value: 'GET,DELETE,PATCH,POST,PUT,OPTIONS' },
+          { key: 'Access-Control-Allow-Headers', value: 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization' },
         ],
       },
     ];
@@ -91,6 +91,7 @@ const nextConfig = {
   swcMinify: false,
   experimental: {
     missingSuspenseWithCSRBailout: false,
+    appDir: true,
   },
 };
 

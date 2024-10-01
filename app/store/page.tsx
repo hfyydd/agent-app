@@ -38,6 +38,13 @@ export default function Index() {
   return (
     <div className="flex flex-col min-h-screen">
       <div className="container mx-auto px-4 py-8 w-full">
+        {/* 新增的"支付页面"按钮 */}
+        <div className="text-center mb-8">
+          <Link href="/lantu" className="bg-blue-500 text-white px-6 py-3 rounded-full inline-block hover:bg-blue-600 transition-colors text-lg font-semibold">
+            支付页面
+          </Link>
+        </div>
+
         {featuredWorkflow && featuredWorkflow.workflows && (
           <header className="mb-8">
             <h1 className="text-2xl sm:text-3xl font-bold mb-2">{featuredWorkflow.workflows.name}</h1>
@@ -57,7 +64,7 @@ export default function Index() {
         <WorkflowList workflows={workflows} />
       </div>
       
-      {/* 添加新的页脚 */}
+      {/* 现有的页脚 */}
       <footer className="mt-16 pt-8 border-t border-gray-200">
         <div className="text-center text-sm text-gray-500">
           <p>选择购买即表示您同意我们的服务条款和隐私政策。</p>
