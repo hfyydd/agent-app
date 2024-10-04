@@ -54,41 +54,42 @@ export default function RechargePage() {
         throw new Error('生成二维码失败');
       }
 
-      const qrcodeString = data.data.QRcode_url;
-      setQrCodeUrl(qrcodeString);
+      // 插入订单记录
+      const { data: user, error: userError } = await supabase.auth.getUser();
+      if (userError) {
+        console.error('获取用户信息失败:', userError);
+        return;
+      }
 
-      // // 插入订单记录
-      // const { data: user, error: userError } = await supabase.auth.getUser();
-      // if (userError) {
-      //   console.error('获取用户信息失败:', userError);
-      //   return;
-      // }
+      const { error: insertError } = await supabase
+        .from('orders')
+        .insert({
+          order_number: orderNumber,
+          user_id: user.user.id,
+          order_type: 0,
+          amount: total_fee,
+          payment_status: 0,
+          processing_status: 0
+        });
 
-      // const { error: insertError } = await supabase
-      //   .from('orders')
-      //   .insert({
-      //     order_number: orderNumber,
-      //     user_id: user.user.id,
-      //     order_type: 0,
-      //     amount: total_fee,
-      //     payment_status: 0,
-      //     processing_status: 0
-      //   });
+      if (insertError) {
+        console.error('插入订单记录失败:', insertError);
+      } else {
+        //插入订单成功
+        //展示微信支付二维码图片
+        const qrcodeString = data.data.QRcode_url;
+        setQrCodeUrl(qrcodeString);
 
-      // if (insertError) {
-      //   console.error('插入订单记录失败:', insertError);
-      // } else {
-      //   //开启定时器查询订单状态
-      //   // startOrderStatusCheck(orderNumber);
-      // }
+        //开启定时器查询订单状态
+        startOrderStatusCheck(orderNumber);
+      }
     } catch (error) {
-      console.error('获取二维码失败:', error);
+      console.error('获取二维码失败 或 订单处理失败', error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  //开启定时器，检查订单状态，是否已支付。
   const startOrderStatusCheck = (orderNumber: string) => {
     // 清除之前的定时器（如果存在）
     if (intervalIdRef.current) {
@@ -97,57 +98,45 @@ export default function RechargePage() {
 
     intervalIdRef.current = setInterval(async () => {
       // 这里是定时器执行的方法
-      //查询订单
-      const timeStamp = Math.floor(Date.now() / 1000).toString(); // 时间戳
+      console.log("----定时器开始执行----");
 
-      //生成签名
-      const sign = wxPaySign({
-        mch_id: process.env.MCH_ID,
-        out_trade_no: orderNumber,
-        timeStamp: timeStamp
-      }, process.env.MCH_KEY);
+      try {
+        const response = await fetch('/api/lantu/get_pay_order', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            out_trade_no: orderNumber
+          }),
+        });
 
-      //TODO
-      const response = await fetch('https://api.ltzf.cn/api/wxpay/get_pay_order', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          mch_id: process.env.MCH_ID,
-          out_trade_no: orderNumber, // 生成订单号
-          timeStamp: timeStamp, // 获取秒级时间戳
-          sign: sign,
-        }),
-      });
-
-      if (!response.ok) {
-        console.error('检查支付状态失败');
-        return;
-      }
-
-
-      if (!response.ok) {
-        console.error('检查支付状态失败');
-        return;
-      }
-
-      const result: LTQueryOrderResponse = await response.json();
-
-      if (result.code == 0) {
-        if (result.data.pay_status == 1) {
-          //停止定时器
-          if (intervalIdRef.current) {
-            clearInterval(intervalIdRef.current);
-            intervalIdRef.current = null;
-          }
-          console.log('支付成功');
-          // TODO: 更新用户界面，显示支付成功信息
+        if (!response.ok) {
+          console.error('检查支付状态失败');
+          return;
         }
 
-      }
+        const result: LTQueryOrderResponse = await response.json();
 
-    }, 3000);
+        if (result.code == 0) {
+          if (result.data.pay_status == 1) {
+            //订单支付成功
+            //停止定时器
+            if (intervalIdRef.current) {
+              clearInterval(intervalIdRef.current);
+              intervalIdRef.current = null;
+            }
+            console.log('支付成功');
+            // TODO: 更新用户界面，显示支付成功信息
+            // 使用window.alert提醒用户支付成功
+            window.alert('支付成功！');
+          }
+        }
+      } catch (error) {
+        console.error('查询订单状态失败:', error);
+      } finally {
+      }
+    }, 6000);
   };
 
   useEffect(() => {
@@ -211,7 +200,12 @@ export default function RechargePage() {
       {qrCodeUrl && (
         <div className="mt-6 text-center">
           <h2 className="text-xl font-bold mb-2 dark:text-white">扫描二维码支付</h2>
-          <QRCodeSVG value={qrCodeUrl} size={200} />
+          <Image
+            src={qrCodeUrl}
+            alt="微信支付二维码"
+            width={200}
+            height={200}
+          />
         </div>
       )}
 

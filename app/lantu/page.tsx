@@ -96,7 +96,7 @@ export default function LantuPage() {
             // 这里是定时器执行的方法
             console.log("----定时器开始执行----");
 
-            try {    
+            try {
                 const response = await fetch('/api/lantu/get_pay_order', {
                     method: 'POST',
                     headers: {
@@ -106,65 +106,32 @@ export default function LantuPage() {
                         out_trade_no: orderNumber
                     }),
                 });
-    
+
                 if (!response.ok) {
                     console.error('检查支付状态失败');
                     return;
-                  }
-            
-                  const result: LTQueryOrderResponse = await response.json();
-            
-                  if (result.code == 0) {
-                    if (result.data.pay_status == 1) {
-                      //订单支付成功
-                      //停止定时器
-                      if (intervalIdRef.current) {
-                        clearInterval(intervalIdRef.current);
-                        intervalIdRef.current = null;
-                      }
-                      console.log('支付成功');
-                      // TODO: 更新用户界面，显示支付成功信息
-                      // 使用window.alert提醒用户支付成功
-                      window.alert('支付成功！');
-                    }
-                  }
+                }
 
-            
+                const result: LTQueryOrderResponse = await response.json();
+
+                if (result.code == 0) {
+                    if (result.data.pay_status == 1) {
+                        //订单支付成功
+                        //停止定时器
+                        if (intervalIdRef.current) {
+                            clearInterval(intervalIdRef.current);
+                            intervalIdRef.current = null;
+                        }
+                        console.log('支付成功');
+                        // TODO: 更新用户界面，显示支付成功信息
+                        // 使用window.alert提醒用户支付成功
+                        window.alert('支付成功！');
+                    }
+                }
             } catch (error) {
                 console.error('查询订单状态失败:', error);
             } finally {
             }
-
-
-            //查询订单
-            // const timeStamp = Math.floor(Date.now() / 1000).toString(); // 时间戳
-
-            // //生成签名
-            // const sign = wxPaySign({
-            //     mch_id: process.env.MCH_ID,
-            //     out_trade_no: orderNumber,
-            //     timeStamp: timeStamp
-            // }, process.env.MCH_KEY);
-
-            // //TODO
-            // const response = await fetch('https://api.ltzf.cn/api/wxpay/get_pay_order', {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //     },
-            //     body: JSON.stringify({
-            //         mch_id: process.env.MCH_ID,
-            //         out_trade_no: orderNumber, // 生成订单号
-            //         timeStamp: timeStamp, // 获取秒级时间戳
-            //         sign: sign,
-            //     }),
-            // });
-
-            // if (!response.ok) {
-            //     console.error('检查支付状态失败');
-            //     return;
-            // }
-
         }, 6000);
     };
 
@@ -173,6 +140,7 @@ export default function LantuPage() {
         return () => {
             if (intervalIdRef.current) {
                 clearInterval(intervalIdRef.current);
+                intervalIdRef.current = null;
             }
         };
     }, []);
