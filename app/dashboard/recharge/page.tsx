@@ -256,7 +256,7 @@ export default function RechargePage() {
         {qrCodeUrl && !paymentSuccess && (
           <div className="mt-6 flex flex-col items-center">
             <h2 className="text-xl font-bold mb-2 dark:text-white">扫描二维码支付</h2>
-            <div className="w-48 h-48 relative">
+            <div className="w-48 h-48 relative mb-2">
               <Image
                 src={qrCodeUrl}
                 alt="微信支付二维码"
@@ -265,6 +265,9 @@ export default function RechargePage() {
                 style={{ objectFit: 'contain' }}
               />
             </div>
+            <p className="text-lg font-semibold dark:text-gray-300">
+              充值金额: <span className="text-green-500">{selectedAmount} 元</span>
+            </p>
           </div>
         )}
 
