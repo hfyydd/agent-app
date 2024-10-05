@@ -209,8 +209,8 @@ export default function RechargePage() {
         <p className="mb-2 dark:text-gray-300">尊敬的用户</p>
         <p className="mb-2 dark:text-gray-300">充值步骤：</p>
         <ol className="list-decimal list-inside mb-2 dark:text-gray-300">
-          <li>点击下方的"获取微信支付二维码"按钮</li>
           <li>选择您想要的充值金额</li>
+          <li>点击下方的"获取微信支付二维码"按钮</li>
           <li>完成支付流程</li>
           <li>充值完成后，您的账户余额将自动更新</li>
         </ol>
