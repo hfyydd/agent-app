@@ -260,8 +260,9 @@ export default function RechargePage() {
               <Image
                 src={qrCodeUrl}
                 alt="微信支付二维码"
-                layout="fill"
-                objectFit="contain"
+                width={200}
+                height={200}
+                style={{ objectFit: 'contain' }}
               />
             </div>
           </div>
