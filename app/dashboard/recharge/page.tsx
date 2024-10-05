@@ -195,9 +195,6 @@ export default function RechargePage() {
     setSelectedAmount(amount);
   };
 
-  const handleRecharge = () => {
-    window.location.href = 'https://ifdian.net/order/create?plan_id=07231514759b11ef83a95254001e7c00&product_type=0&remark=';
-  };
 
   return (
     <div className="p-4 max-w-2xl mx-auto">
