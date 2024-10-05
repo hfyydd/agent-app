@@ -159,12 +159,16 @@ export async function POST(request: Request) {
                         }
 
                         const userId = orderData.user_id;
-
+                        const balanceIncrement = parseFloat(payAmount) * 10; // 充值金额 * 10
                         // 使用 RPC 调用 recharge_account 函数
-                        const { data, error } = await supabase.rpc('recharge_account', {
+                        // const { data, error } = await supabase.rpc('recharge_account', {
+                        //     p_user_id: userId,
+                        //     p_amount: balanceIncrement,
+                        //     p_admin_id: null // 这里是自动充值，没有管理员操作，所以传 null
+                        // });
+                        const { error: error } = await supabase.rpc('increment_balance', {
                             p_user_id: userId,
-                            p_amount: payAmount,
-                            p_admin_id: null // 这里是自动充值，没有管理员操作，所以传 null
+                            increment_amount: balanceIncrement
                         });
 
                         if (error) {

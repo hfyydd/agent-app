@@ -130,8 +130,6 @@ export default function RechargePage() {
             }
             console.log('支付成功');
 
-            // 更新用户账户余额
-            await updateUserBalance(orderNumber);
 
             // 设置支付成功状态
             setPaymentSuccess(true);
@@ -149,39 +147,39 @@ export default function RechargePage() {
     }, 6000);
   };
 
-  const updateUserBalance = async (orderNumber: string) => {
-    const supabase = createClient();
-    try {
-      // 获取订单信息
-      const { data: orderData, error: orderError } = await supabase
-        .from('orders')
-        .select('amount, user_id')
-        .eq('order_number', orderNumber)
-        .single();
+  // const updateUserBalance = async (orderNumber: string) => {
+  //   const supabase = createClient();
+  //   try {
+  //     // 获取订单信息
+  //     const { data: orderData, error: orderError } = await supabase
+  //       .from('orders')
+  //       .select('amount, user_id')
+  //       .eq('order_number', orderNumber)
+  //       .single();
 
-      if (orderError) throw orderError;
+  //     if (orderError) throw orderError;
 
-      if (!orderData) {
-        console.error('未找到订单信息');
-        return;
-      }
+  //     if (!orderData) {
+  //       console.error('未找到订单信息');
+  //       return;
+  //     }
 
-      const { amount, user_id } = orderData;
-      const balanceIncrement = parseFloat(amount) * 10; // 充值金额 * 10
+  //     const { amount, user_id } = orderData;
+  //     const balanceIncrement = parseFloat(amount) * 10; // 充值金额 * 10
 
-      // 更新用户账户余额
-      const { error: updateError } = await supabase.rpc('increment_balance', {
-        p_user_id: user_id,
-        increment_amount: balanceIncrement
-      });
+  //     // 更新用户账户余额
+  //     const { error: updateError } = await supabase.rpc('increment_balance', {
+  //       p_user_id: user_id,
+  //       increment_amount: balanceIncrement
+  //     });
 
-      if (updateError) throw updateError;
+  //     if (updateError) throw updateError;
 
-      console.log('用户余额更新成功');
-    } catch (error) {
-      console.error('更新用户余额失败:', error);
-    }
-  };
+  //     console.log('用户余额更新成功');
+  //   } catch (error) {
+  //     console.error('更新用户余额失败:', error);
+  //   }
+  // };
 
   useEffect(() => {
     // 组件卸载时清除定时器
@@ -220,7 +218,7 @@ export default function RechargePage() {
       <div className="mt-6">
         <div className="mb-4 text-center">
           <p className="mb-2 dark:text-gray-300">选择充值金额：</p>
-          {['10', '20', '50', '100'].map((amount) => (
+          {['10', '20', '50', '100','0.01'].map((amount) => (
             <button
               key={amount}
               onClick={() => handleAmountSelect(amount)}
@@ -233,13 +231,13 @@ export default function RechargePage() {
               {amount} 元
             </button>
           ))}
-          <input
+          {/* <input
             type="number"
             value={selectedAmount}
             onChange={(e) => setSelectedAmount(e.target.value)}
             className="mr-2 mb-2 px-4 py-2 rounded border dark:bg-gray-700 dark:text-gray-300"
             placeholder="自定义金额"
-          />
+          /> */}
         </div>
         <div className="text-center">
           {!paymentSuccess && (
