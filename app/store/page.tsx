@@ -39,11 +39,11 @@ export default function Index() {
     <div className="flex flex-col min-h-screen">
       <div className="container mx-auto px-4 py-8 w-full">
         {/* 新增的"支付页面"按钮 */}
-        <div className="text-center mb-8">
+        {/* <div className="text-center mb-8">
           <Link href="/lantu" className="bg-blue-500 text-white px-6 py-3 rounded-full inline-block hover:bg-blue-600 transition-colors text-lg font-semibold">
             支付页面
           </Link>
-        </div>
+        </div> */}
 
         {featuredWorkflow && featuredWorkflow.workflows && (
           <header className="mb-8">

@@ -13,6 +13,8 @@ import { wxPaySign } from '@/lib/utils/ltpaysign';
 export default function RechargePage() {
   const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedAmount, setSelectedAmount] = useState<string>('10');
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
   const intervalIdRef = useRef<NodeJS.Timeout | null>(null);
 
   // 生成充值订单号的函数
@@ -29,7 +31,7 @@ export default function RechargePage() {
     const supabase = createClient();
     try {
       const orderNumber = generateOrderNumber(); // 订单号
-      const total_fee = '0.01'; // 充值金额
+      const total_fee = selectedAmount; // 使用选择的金额
       const body = '平台用户充值'; // 订单描述
 
       const response = await fetch('/api/lantu/get_wx_qrcode', {
@@ -98,7 +100,7 @@ export default function RechargePage() {
 
     intervalIdRef.current = setInterval(async () => {
       // 这里是定时器执行的方法
-      console.log("----定时器开始执行----");
+      //console.log("----定时器开始执行----");
 
       try {
         const response = await fetch('/api/lantu/get_pay_order', {
@@ -120,23 +122,65 @@ export default function RechargePage() {
 
         if (result.code == 0) {
           if (result.data.pay_status == 1) {
-            //订单支付成功
-            //停止定时器
+            // 订单支付成功
+            // 停止定时器
             if (intervalIdRef.current) {
               clearInterval(intervalIdRef.current);
               intervalIdRef.current = null;
             }
             console.log('支付成功');
-            // TODO: 更新用户界面，显示支付成功信息
+
+            // 更新用户账户余额
+            await updateUserBalance(orderNumber);
+
+            // 设置支付成功状态
+            setPaymentSuccess(true);
+
+            // 清除二维码URL
+            setQrCodeUrl(null);
+
             // 使用window.alert提醒用户支付成功
-            window.alert('支付成功！');
+            window.alert('支付成功！您的账户余额已更新。');
           }
         }
       } catch (error) {
         console.error('查询订单状态失败:', error);
-      } finally {
       }
     }, 6000);
+  };
+
+  const updateUserBalance = async (orderNumber: string) => {
+    const supabase = createClient();
+    try {
+      // 获取订单信息
+      const { data: orderData, error: orderError } = await supabase
+        .from('orders')
+        .select('amount, user_id')
+        .eq('order_number', orderNumber)
+        .single();
+
+      if (orderError) throw orderError;
+
+      if (!orderData) {
+        console.error('未找到订单信息');
+        return;
+      }
+
+      const { amount, user_id } = orderData;
+      const balanceIncrement = parseFloat(amount) * 10; // 充值金额 * 10
+
+      // 更新用户账户余额
+      const { error: updateError } = await supabase.rpc('increment_balance', {
+        p_user_id: user_id,
+        increment_amount: balanceIncrement
+      });
+
+      if (updateError) throw updateError;
+
+      console.log('用户余额更新成功');
+    } catch (error) {
+      console.error('更新用户余额失败:', error);
+    }
   };
 
   useEffect(() => {
@@ -149,6 +193,10 @@ export default function RechargePage() {
     };
   }, []);
 
+  const handleAmountSelect = (amount: string) => {
+    setSelectedAmount(amount);
+  };
+
   const handleRecharge = () => {
     window.location.href = 'https://ifdian.net/order/create?plan_id=07231514759b11ef83a95254001e7c00&product_type=0&remark=';
   };
@@ -158,31 +206,73 @@ export default function RechargePage() {
       <h1 className="text-2xl font-bold mb-4 dark:text-white">账户充值</h1>
 
       <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-md mb-6">
-        <p className="mb-2 dark:text-gray-300">尊敬的用户，我们现在使用爱发电平台进行充值。</p>
+        <p className="mb-2 dark:text-gray-300">尊敬的用户</p>
         <p className="mb-2 dark:text-gray-300">充值步骤：</p>
         <ol className="list-decimal list-inside mb-2 dark:text-gray-300">
-          <li>点击下方的"前往爱发电充值"按钮</li>
-          <li>在爱发电页面选择您想要的充值金额</li>
+          <li>点击下方的"获取微信支付二维码"按钮</li>
+          <li>选择您想要的充值金额</li>
           <li>完成支付流程</li>
           <li>充值完成后，您的账户余额将自动更新</li>
         </ol>
         <p className="dark:text-gray-300">感谢您的支持！</p>
       </div>
 
-      <div className="mt-6 text-center">
-        <button
-          onClick={fetchQRCode}
-          className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mr-4"
-          disabled={isLoading}
-        >
-          {isLoading ? '加载中...' : '获取微信支付二维码'}
-        </button>
-        <button
-          onClick={handleRecharge}
-          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
-        >
-          前往爱发电充值
-        </button>
+      <div className="mt-6">
+        <div className="mb-4 text-center">
+          <p className="mb-2 dark:text-gray-300">选择充值金额：</p>
+          {['10', '20', '50', '100'].map((amount) => (
+            <button
+              key={amount}
+              onClick={() => handleAmountSelect(amount)}
+              className={`mr-2 mb-2 px-4 py-2 rounded ${
+                selectedAmount === amount
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300'
+              }`}
+            >
+              {amount} 元
+            </button>
+          ))}
+          <input
+            type="number"
+            value={selectedAmount}
+            onChange={(e) => setSelectedAmount(e.target.value)}
+            className="mr-2 mb-2 px-4 py-2 rounded border dark:bg-gray-700 dark:text-gray-300"
+            placeholder="自定义金额"
+          />
+        </div>
+        <div className="text-center">
+          {!paymentSuccess && (
+            <button
+              onClick={fetchQRCode}
+              className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
+              disabled={isLoading}
+            >
+              {isLoading ? '加载中...' : '获取微信支付二维码'}
+            </button>
+          )}
+        </div>
+        
+        {qrCodeUrl && !paymentSuccess && (
+          <div className="mt-6 flex flex-col items-center">
+            <h2 className="text-xl font-bold mb-2 dark:text-white">扫描二维码支付</h2>
+            <div className="w-48 h-48 relative">
+              <Image
+                src={qrCodeUrl}
+                alt="微信支付二维码"
+                layout="fill"
+                objectFit="contain"
+              />
+            </div>
+          </div>
+        )}
+
+        {paymentSuccess && (
+          <div className="mt-6 text-center">
+            <p className="text-xl font-bold text-green-500 dark:text-green-400">支付成功！</p>
+            <p className="mt-2 dark:text-gray-300">您的账户余额已更新。</p>
+          </div>
+        )}
       </div>
 
       <div className="mt-6 text-sm text-gray-600 dark:text-gray-400">
@@ -196,19 +286,6 @@ export default function RechargePage() {
           <li><strong>微信号：koalababy2024</strong></li>
         </ul>
       </div>
-
-      {qrCodeUrl && (
-        <div className="mt-6 text-center">
-          <h2 className="text-xl font-bold mb-2 dark:text-white">扫描二维码支付</h2>
-          <Image
-            src={qrCodeUrl}
-            alt="微信支付二维码"
-            width={200}
-            height={200}
-          />
-        </div>
-      )}
-
     </div>
   );
 }
