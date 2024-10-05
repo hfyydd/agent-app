@@ -42,6 +42,7 @@ export default function LantuPage() {
             }
 
             const data: LTWxQRCodeResponse = await response.json();
+            console.log('data:',data)
 
             if (data.code !== 0) {
                 throw new Error('生成二维码失败');
