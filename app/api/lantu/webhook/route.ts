@@ -3,6 +3,7 @@ import { LTPaymentCallback } from '@/types'
 import { createClient } from '@/utils/supabase/client';
 import { Mutex } from 'async-mutex';
 import { wxPaySign } from '@/lib/utils/ltpaysign';
+import { v4 as uuidv4 } from 'uuid';
 
 const mutex = new Mutex();
 
@@ -52,6 +53,8 @@ export async function POST(request: Request) {
             const orderId = payResult.out_trade_no;
 
             const attach = payResult.attach;
+
+            console.log('attach in webhook:', attach);
             let productType = 0;//默认是0，账户充值
             if (attach) {
                 const attachObj = JSON.parse(attach!);
@@ -181,7 +184,7 @@ export async function POST(request: Request) {
                         console.error('处理充值时发生错误:', error);
                         return new Response('处理失败', { status: 500 });
                     }
-                } else if (productType === 1) {
+                } else if (productType === 1 || productType === 2) {
                     //e2m app
                     //处理e2m app的订阅，更新订阅表
 
@@ -219,6 +222,20 @@ export async function POST(request: Request) {
                     }
 
                     const userId = orderData.user_id;
+                    let endDate: Date;
+                    if (productType === 1) {
+                        // 如果 productType 为 1，设置结束日期为一个月后
+                        endDate = new Date();
+                        endDate.setMonth(endDate.getMonth() + 1);
+                    } else if (productType === 2) {
+                        // 如果 productType 为 2，设置结束日期为一年后
+                        endDate = new Date();
+                        endDate.setFullYear(endDate.getFullYear() + 1);
+                    } else {
+                        // 如果 productType 不是 1 或 2，可以抛出错误或设置默认值
+                        throw new Error('无效的产品类型');
+                    }
+
                     const { data: subscriptionData, error: subscriptionError } = await supabase
                         .from('subscriptions')
                         .insert({
@@ -226,8 +243,9 @@ export async function POST(request: Request) {
                             order_number: orderId,
                             product_type: productType,
                             start_date: new Date().toISOString(),
-                            end_date: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString()
-                        });
+                            end_date: endDate.toISOString()
+                        })
+                        .select();
 
                     if (subscriptionError) {
                         console.error('更新订阅表失败:', subscriptionError);

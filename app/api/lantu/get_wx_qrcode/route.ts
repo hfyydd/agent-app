@@ -23,7 +23,7 @@ import { wxPaySign } from '@/lib/utils/ltpaysign';
 export async function POST(req: NextRequest) {
   console.log("----------POST");
   try {
-    const { out_trade_no, total_fee, body } = await req.json();
+    const { out_trade_no, total_fee, body, attach } = await req.json();
     
     const mch_id = process.env.MCH_ID;
     const timestamp = Math.floor(Date.now() / 1000).toString();
@@ -39,6 +39,8 @@ export async function POST(req: NextRequest) {
       notify_url
     }, mch_key);
 
+    console.log("attach", attach)
+
     const formBody = new URLSearchParams({
       mch_id: mch_id?.toString() ?? '',
       out_trade_no: out_trade_no?.toString() ?? '',
@@ -47,7 +49,7 @@ export async function POST(req: NextRequest) {
       timestamp: timestamp?.toString() ?? '',
       notify_url: notify_url?.toString() ?? '',
       sign: sign?.toString() ?? '',
-      attach: '{"product_type":0}',
+      attach: attach ? attach : '{"product_type":0}',
     }).toString();
 
     const response = await fetch('https://api.ltzf.cn/api/wxpay/native', {
