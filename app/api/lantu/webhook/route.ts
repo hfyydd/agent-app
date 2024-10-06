@@ -53,8 +53,6 @@ export async function POST(request: Request) {
             const orderId = payResult.out_trade_no;
 
             const attach = payResult.attach;
-
-            console.log('attach in webhook:', attach);
             let productType = 0;//默认是0，账户充值
             if (attach) {
                 const attachObj = JSON.parse(attach!);
