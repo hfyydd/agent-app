@@ -110,7 +110,7 @@ const PricingPage: React.FC = () => {
         });
 
       if (insertError) {
-        console.error('插入订单记录失败:', insertError);
+        console.error('��入订单记录失败:', insertError);
       } else {
         //插入订单成功
         //展示微信支付二维码图片
@@ -337,6 +337,19 @@ const PricingPage: React.FC = () => {
         >
           {user ? '打开 E2MUI 应用' : '登录以打开 E2MUI 应用'}
         </button>
+
+        {/* 新增下载按钮 */}
+        <p className="mt-4 text-sm text-gray-600">
+          
+          </p>
+        <a
+          href="https://github.com/hfyydd/e2mui/releases/tag/v1.0"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-4 inline-block bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
+        >
+          下载 E2MUI 应用
+        </a>
       </div>
 
       <div className="mt-16">
