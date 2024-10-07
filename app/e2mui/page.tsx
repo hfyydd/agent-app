@@ -364,7 +364,7 @@ const PricingPage: React.FC = () => {
           
           </p>
         <a
-          href="https://github.com/hfyydd/e2mui/releases/tag/v1.0"
+          href="https://github.com/hfyydd/e2mui/releases"
           target="_blank"
           rel="noopener noreferrer"
           className="mt-4 inline-block bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
