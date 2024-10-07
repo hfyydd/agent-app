@@ -110,7 +110,7 @@ const PricingPage: React.FC = () => {
         });
 
       if (insertError) {
-        console.error('��入订单记录失败:', insertError);
+        console.error('入订单记录失败:', insertError);
       } else {
         //插入订单成功
         //展示微信支付二维码图片
@@ -227,6 +227,19 @@ const PricingPage: React.FC = () => {
     }
   };
 
+  const openE2MUI2App = () => {
+    console.log('打开 E2MUI2 应用时的刷新令牌:', refreshToken);
+    if (user && userToken && refreshToken) {
+      // 用户已登录，打开应用
+      const appUrl = `e2mui2://open?token=${encodeURIComponent(userToken)}&refreshToken=${encodeURIComponent(refreshToken)}`;
+      console.log('E2MUI2 应用 URL:', appUrl);
+      window.location.href = appUrl;
+    } else {
+      // 用户未登录，跳转到登录页面
+      router.push('/login');
+    }
+  };
+
   const handlePlanAction = () => {
     if (subscriptionStatus.isSubscribed) {
       // 如果已订阅，不执行任何操作
@@ -336,6 +349,14 @@ const PricingPage: React.FC = () => {
           className="mt-6 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
         >
           {user ? '打开 E2MUI 应用' : '登录以打开 E2MUI 应用'}
+        </button>
+
+        {/* 新增 E2MUI2 按钮 */}
+        <button
+          onClick={openE2MUI2App}
+          className="mt-4 bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded"
+        >
+          {user ? '打开 E2MUI2 应用' : '登录以打开 E2MUI2 应用'}
         </button>
 
         {/* 新增下载按钮 */}
