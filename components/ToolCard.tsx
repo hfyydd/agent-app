@@ -77,7 +77,7 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
   const renderPrice = () => {
     return (
       <span className="text-green-600 font-semibold">
-        🐨{typeof price === 'number' ? price.toFixed(2) : '0.00'}
+        🐨{typeof price === 'number' ? price.toFixed(2) : '0.00'}考拉币
       </span>
     );
   };
